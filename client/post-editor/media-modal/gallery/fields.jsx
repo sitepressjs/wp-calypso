@@ -16,6 +16,7 @@ import SelectDropdown from 'components/select-dropdown';
 import SelectDropdownItem from 'components/select-dropdown/item';
 import FormCheckbox from 'components/forms/form-checkbox';
 import { GalleryColumnedTypes, GallerySizeableTypes } from 'lib/media/constants';
+import { isModuleActive } from 'lib/site/utils';
 
 export default React.createClass( {
 	displayName: 'EditorMediaModalGalleryFields',
@@ -43,7 +44,7 @@ export default React.createClass( {
 			default: this.translate( 'Thumbnail Grid' )
 		};
 
-		if ( site && ( ! site.jetpack || site.isModuleActive( 'tiled-gallery' ) ) ) {
+		if ( site && ( ! site.jetpack || isModuleActive( site, 'tiled-gallery' ) ) ) {
 			assign( options, {
 				rectangular: this.translate( 'Tiled Mosaic' ),
 				square: this.translate( 'Square Tiles' ),
@@ -52,7 +53,7 @@ export default React.createClass( {
 			} );
 		}
 
-		if ( site && ( ! site.jetpack || site.isModuleActive( 'shortcodes' ) ) ) {
+		if ( site && ( ! site.jetpack || isModuleActive( site, 'shortcodes' ) ) ) {
 			assign( options, {
 				slideshow: this.translate( 'Slideshow' )
 			} );
