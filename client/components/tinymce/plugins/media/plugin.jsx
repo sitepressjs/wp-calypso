@@ -214,7 +214,7 @@ function mediaButton( editor ) {
 				delete merged.caption;
 
 				// Use markup utility to generate replacement element
-				markup = MediaMarkup.get( merged, options );
+				markup = MediaMarkup.get( selectedSite, merged, options );
 			} else {
 				// If there's an unidentifiable blob image in the post content,
 				// we assume that an error occurred, that the image should be
@@ -441,7 +441,7 @@ function mediaButton( editor ) {
 		const size = findFn( SIZE_ORDER, isMatchingSize ) || SIZE_ORDER[ SIZE_ORDER.length - 1 ];
 
 		// Generate updated markup
-		const markup = MediaMarkup.get( media, assign( parsed.appearance, { size } ) );
+		const markup = MediaMarkup.get( selectedSite, media, assign( parsed.appearance, { size } ) );
 
 		// Replace selected content
 		editor.selection.setContent( markup );
