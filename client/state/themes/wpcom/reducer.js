@@ -9,15 +9,9 @@ import { keyBy, reduce, mapValues } from 'lodash';
  */
 import ThemeQueryManager from 'lib/query-manager/theme';
 import {
-	THEME_DELETE,
-	THEME_DELETE_SUCCESS,
-	THEME_DELETE_FAILURE,
 	THEME_REQUEST,
 	THEME_REQUEST_SUCCESS,
 	THEME_REQUEST_FAILURE,
-	THEME_RESTORE,
-	THEME_RESTORE_FAILURE,
-	THEME_SAVE,
 	THEMES_RECEIVE,
 	THEMES_REQUEST,
 	THEMES_REQUEST_SUCCESS,
@@ -137,18 +131,6 @@ export const queries = ( () => {
 	}
 
 	return createReducer( {}, {
-		[ THEME_RESTORE ]: ( state, { siteId, themeId } ) => {
-			return applyToManager( state, siteId, 'receive', false, {
-				ID: themeId,
-				status: '__RESTORE_PENDING'
-			}, { patch: true } );
-		},
-		[ THEME_RESTORE_FAILURE ]: ( state, { siteId, themeId } ) => {
-			return applyToManager( state, siteId, 'receive', false, {
-				ID: themeId,
-				status: 'trash'
-			}, { patch: true } );
-		},
 		[ THEMES_REQUEST_SUCCESS ]: ( state, { siteId, query, themes, found } ) => {
 			const normalizedThemes = themes.map( normalizeThemeForState );
 			return applyToManager( state, siteId, 'receive', true, normalizedThemes, { query, found } );
@@ -166,27 +148,6 @@ export const queries = ( () => {
 			return reduce( themesBySiteId, ( memo, siteThemes, siteId ) => {
 				return applyToManager( memo, siteId, 'receive', true, siteThemes );
 			}, state );
-		},
-		[ THEME_SAVE ]: ( state, { siteId, themeId, theme } ) => {
-			return applyToManager( state, siteId, 'receive', false, {
-				ID: themeId,
-				...theme
-			}, { patch: true } );
-		},
-		[ THEME_DELETE ]: ( state, { siteId, themeId } ) => {
-			return applyToManager( state, siteId, 'receive', false, {
-				ID: themeId,
-				status: '__DELETE_PENDING'
-			}, { patch: true } );
-		},
-		[ THEME_DELETE_FAILURE ]: ( state, { siteId, themeId } ) => {
-			return applyToManager( state, siteId, 'receive', false, {
-				ID: themeId,
-				status: 'trash'
-			}, { patch: true } );
-		},
-		[ THEME_DELETE_SUCCESS ]: ( state, { siteId, themeId } ) => {
-			return applyToManager( state, siteId, 'removeItem', false, themeId );
 		},
 		[ SERIALIZE ]: ( state ) => {
 			return mapValues( state, ( { data, options } ) => ( { data, options } ) );
