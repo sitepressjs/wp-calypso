@@ -83,9 +83,10 @@ describe( 'reducer', () => {
 			expect( state ).to.eql( {} );
 		} );
 
-		it( 'should index received themes by ID', () => {
+		it( 'should index received themes by site ID, and by theme ID', () => {
 			const state = items( undefined, {
 				type: THEMES_RECEIVE,
+				siteId: 1234567,
 				themes: [
 					twentyfifteen,
 					twentysixteen,
@@ -94,25 +95,30 @@ describe( 'reducer', () => {
 			} );
 
 			expect( state ).to.eql( {
-				twentyfifteen,
-				twentysixteen,
-				mood
+				1234567: {
+					twentyfifteen,
+					twentysixteen,
+					mood
+				}
 			} );
 		} );
 
 		it( 'should accumulate themes', () => {
 			const original = deepFreeze( {
-				twentyfifteen
+				1234567: { twentyfifteen }
 			} );
 			const state = items( original, {
 				type: THEMES_RECEIVE,
+				siteId: 1234567,
 				themes: [ twentysixteen, mood ]
 			} );
 
 			expect( state ).to.eql( {
-				twentyfifteen,
-				twentysixteen,
-				mood
+				1234567: {
+					twentyfifteen,
+					twentysixteen,
+					mood
+				}
 			} );
 		} );
 

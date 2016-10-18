@@ -41,7 +41,10 @@ import { itemsSchema, queriesSchema } from './schema';
  */
 export const items = createReducer( {}, {
 	[ THEMES_RECEIVE ]: ( state, action ) => {
-		return Object.assign( {}, state, keyBy( action.themes, 'id' ) );
+		const { siteId } = action;
+
+		const fetchedThemes = keyBy( action.themes, 'id' );
+		return { ...state, [ siteId ]: { ...( state[ siteId ] ), ...fetchedThemes } };
 	}
 }, itemsSchema );
 
