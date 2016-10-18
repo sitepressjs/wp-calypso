@@ -310,17 +310,6 @@ describe( 'reducer', () => {
 			expect( state ).to.equal( original );
 		} );
 
-		it( 'should track themes even if not associated with an existing site or query', () => {
-			const state = queries( deepFreeze( {} ), {
-				type: THEMES_RECEIVE,
-				themes: [ twentysixteen ]
-			} );
-
-			expect( state ).to.have.keys( [ '2916284' ] );
-			expect( state[ 2916284 ] ).to.be.an.instanceof( ThemeQueryManager );
-			expect( state[ 2916284 ].getItems() ).to.eql( [ twentysixteen ] );
-		} );
-
 		it( 'should persist state', () => {
 			const original = deepFreeze( queries( deepFreeze( {} ), {
 				type: THEMES_REQUEST_SUCCESS,

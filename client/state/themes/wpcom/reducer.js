@@ -20,8 +20,7 @@ import {
 	DESERIALIZE
 } from 'state/action-types';
 import {
-	getSerializedThemesQuery,
-	normalizeThemeForState
+	getSerializedThemesQuery
 } from './utils';
 import { createReducer, isValidStateWithSchema } from 'state/utils';
 import { itemsSchema, queriesSchema } from './schema';
@@ -132,15 +131,14 @@ export const queries = ( () => {
 
 	return createReducer( {}, {
 		[ THEMES_REQUEST_SUCCESS ]: ( state, { siteId, query, themes, found } ) => {
-			const normalizedThemes = themes.map( normalizeThemeForState );
-			return applyToManager( state, siteId, 'receive', true, normalizedThemes, { query, found } );
+			return applyToManager( state, siteId, 'receive', true, themes, { query, found } );
 		},
 		[ THEMES_RECEIVE ]: ( state, { themes } ) => {
 			const themesBySiteId = reduce( themes, ( memo, theme ) => {
 				return Object.assign( memo, {
 					[ theme.site_ID ]: [
 						...( memo[ theme.site_ID ] || [] ),
-						normalizeThemeForState( theme )
+						theme
 					]
 				} );
 			}, {} );
