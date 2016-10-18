@@ -25,7 +25,6 @@ import {
 	SERIALIZE,
 	DESERIALIZE
 } from 'state/action-types';
-import counts from './counts/reducer';
 import {
 	getSerializedThemesQuery,
 	normalizeThemeForState
@@ -202,7 +201,6 @@ export const queries = ( () => {
 } )();
 
 export default combineReducers( {
-	counts,
 	items,
 	siteRequests,
 	queryRequests,

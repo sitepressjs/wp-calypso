@@ -69,7 +69,6 @@ describe( 'reducer', () => {
 
 	it( 'should include expected keys in return value', () => {
 		expect( reducer( undefined, {} ) ).to.have.keys( [
-			'counts',
 			'items',
 			'siteRequests',
 			'queryRequests',
