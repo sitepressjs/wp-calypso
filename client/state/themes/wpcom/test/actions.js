@@ -73,21 +73,21 @@ describe( 'actions', () => {
 					found: 1,
 					themes: [ { ID: 'twentysixteen', name: 'Twenty Sixteen' } ]
 				} )
-				.get( '/rest/v1.1/sites/77203074/themes' )
+				.get( '/rest/v1/sites/77203074/themes' )
 				.reply( 200, {
 					found: 2,
 					themes: [
-						{ ID: 'twentyfifteen', name: 'Twenty Fixteen' },
+						{ ID: 'twentyfifteen', name: 'Twenty Fifteen' },
 						{ ID: 'twentysixteen', name: 'Twenty Sixteen' }
 					]
 				} )
-				.get( '/rest/v1.2/sites/77203074/themes' )
+				.get( '/rest/v1/sites/77203074/themes' )
 				.query( { search: 'Sixteen' } )
 				.reply( 200, {
 					found: 1,
 					themes: [ { ID: 'twentysixteen', name: 'Twenty Sixteen' } ]
 				} )
-				.get( '/rest/v1.2/sites/77203074/themes' )
+				.get( '/rest/v1/sites/1916284/themes' )
 				.reply( 403, {
 					error: 'authorization_required',
 					message: 'User cannot access this private blog.'
@@ -145,12 +145,65 @@ describe( 'actions', () => {
 					} );
 				} );
 			} );
+		} );
+
+		context( 'with a Jetpack site', () => {
+			it( 'should dispatch fetch action when thunk triggered', () => {
+				requestThemes( 77203074, true )( spy );
+
+				expect( spy ).to.have.been.calledWith( {
+					type: THEMES_REQUEST,
+					siteId: 77203074,
+					query: {}
+				} );
+			} );
+
+			it( 'should dispatch themes receive action when request completes', () => {
+				return requestThemes( 77203074, true )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_RECEIVE,
+						themes: [
+							{ ID: 'twentyfifteen', name: 'Twenty Fifteen' },
+							{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+						]
+					} );
+				} );
+			} );
+
+			it( 'should dispatch themes themes request success action when request completes', () => {
+				return requestThemes( 77203074, true )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_REQUEST_SUCCESS,
+						siteId: 77203074,
+						query: {},
+						found: 2,
+						themes: [
+							{ ID: 'twentyfifteen', name: 'Twenty Fifteen' },
+							{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+						]
+					} );
+				} );
+			} );
+
+			it( 'should dispatch themes request success action with query results', () => {
+				return requestThemes( 77203074, true, { search: 'Sixteen' } )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_REQUEST_SUCCESS,
+						siteId: 77203074,
+						query: { search: 'Sixteen' },
+						found: 1,
+						themes: [
+							{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+						]
+					} );
+				} );
+			} );
 
 			it( 'should dispatch fail action when request fails', () => {
-				return requestThemes( 77203074 )( spy ).then( () => {
+				return requestThemes( 1916284, true )( spy ).then( () => {
 					expect( spy ).to.have.been.calledWith( {
 						type: THEMES_REQUEST_FAILURE,
-						siteId: 77203074,
+						siteId: 1916284,
 						query: {},
 						error: sinon.match( { message: 'User cannot access this private blog.' } )
 					} );
