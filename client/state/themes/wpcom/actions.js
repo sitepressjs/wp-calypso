@@ -1,14 +1,8 @@
 /**
- * External dependencies
- */
-import { isNumber, toArray } from 'lodash';
-
-/**
  * Internal dependencies
  */
 import wpcom from 'lib/wp';
 import { normalizeThemeForApi } from './utils';
-import { getEditedTheme } from 'state/themes/selectors';
 import {
 	THEME_DELETE,
 	THEME_DELETE_SUCCESS,
@@ -58,34 +52,36 @@ export function receiveThemes( themes ) {
 /**
  * Triggers a network request to fetch themes for the specified site and query.
  *
- * @param  {?Number}  siteId Site ID
- * @param  {String}   query  Theme query
- * @return {Function}        Action thunk
+ * @param  {?Number}  siteId    Site ID
+ * @param  {Boolean}  isJetpack If the site is a Jetpack site
+ * @param  {String}   query     Theme query
+ * @return {Function}           Action thunk
  */
-export function requestSiteThemes( siteId, query = {} ) {
+export function requestThemes( siteId, isJetpack = false, query = {} ) {
 	return ( dispatch ) => {
+		let siteIdToQuery, siteIdToStore, queryWithApiVersion;
+
+		if ( isJetpack ) {
+			siteIdToQuery = siteId;
+			siteIdToStore = siteId;
+			queryWithApiVersion = { ...query, apiVersion: '1' };
+		} else {
+			siteIdToQuery = null;
+			siteIdToStore = 'wpcom'; // Themes for all wpcom sites go into 'wpcom' subtree
+			queryWithApiVersion = { ...query, apiVersion: '1.2' };
+		}
+
 		dispatch( {
 			type: THEMES_REQUEST,
-			siteId,
+			siteId: siteIdToStore,
 			query
 		} );
 
-		let source = wpcom;
-		if ( source.skipLocalSyncResult ) {
-			source = source.skipLocalSyncResult();
-		}
-
-		if ( siteId ) {
-			source = source.site( siteId );
-		} else {
-			source = source.me();
-		}
-
-		return source.themesList( query ).then( ( { found, themes } ) => {
+		return wpcom.undocumented.themes( siteIdToQuery, queryWithApiVersion ).then( ( { found, themes } ) => {
 			dispatch( receiveThemes( themes ) );
 			dispatch( {
 				type: THEMES_REQUEST_SUCCESS,
-				siteId,
+				siteId: siteIdToStore,
 				query,
 				found,
 				themes
@@ -93,7 +89,7 @@ export function requestSiteThemes( siteId, query = {} ) {
 		} ).catch( ( error ) => {
 			dispatch( {
 				type: THEMES_REQUEST_FAILURE,
-				siteId,
+				siteId: siteIdToStore,
 				query,
 				error
 			} );
@@ -132,17 +128,6 @@ export function requestSiteTheme( siteId, themeId ) {
 			} );
 		} );
 	};
-}
-
-/**
- * Returns a function which, when invoked, triggers a network request to fetch
- * themes across all of the current user's sites for the specified query.
- *
- * @param  {String}   query Theme query
- * @return {Function}       Action thunk
- */
-export function requestThemes( query = {} ) {
-	return requestSiteThemes( null, query );
 }
 
 /**
@@ -297,38 +282,5 @@ export function restoreTheme( siteId, themeId ) {
 				error
 			} );
 		} );
-	};
-}
-
-/**
- * Returns an action thunk which, when dispatched, adds a term to the current edited theme
- *
- * @param  {Number}   siteId   Site ID
- * @param  {String}   taxonomy Taxonomy Slug
- * @param  {Object}   term     Object of new term attributes
- * @param  {Number}   themeId   ID of theme to which term is associated
- * @return {Function}          Action thunk
- */
-export function addTermForTheme( siteId, taxonomy, term, themeId ) {
-	return ( dispatch, getState ) => {
-		const state = getState();
-		const theme = getEditedTheme( state, siteId, themeId );
-
-		// if there is no theme, no term, or term is temporary, bail
-		if ( ! theme || ! term || ! isNumber( term.ID ) ) {
-			return;
-		}
-
-		const themeTerms = theme.terms || {};
-
-		// ensure we have an array since API returns an object
-		const taxonomyTerms = toArray( themeTerms[ taxonomy ] );
-		taxonomyTerms.push( term );
-
-		dispatch( editTheme( siteId, themeId, {
-			terms: {
-				[ taxonomy ]: taxonomyTerms
-			}
-		} ) );
 	};
 }

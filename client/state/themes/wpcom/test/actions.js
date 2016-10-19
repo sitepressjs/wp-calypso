@@ -75,7 +75,7 @@ describe( 'actions', () => {
 		} );
 	} );
 
-	describe( '#requestSiteThemes()', () => {
+	describe( '#requestThemes()', () => {
 		useNock( ( nock ) => {
 			nock( 'https://public-api.wordpress.com:443' )
 				.persist()
