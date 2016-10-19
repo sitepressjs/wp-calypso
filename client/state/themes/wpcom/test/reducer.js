@@ -124,7 +124,13 @@ describe( 'reducer', () => {
 
 		it( 'should persist state', () => {
 			const original = deepFreeze( {
-				twentysixteen
+				1234567: {
+					twentyfifteen,
+					twentysixteen
+				},
+				wpcom: {
+					mood
+				}
 			} );
 			const state = items( original, { type: SERIALIZE } );
 
@@ -133,7 +139,13 @@ describe( 'reducer', () => {
 
 		it( 'should load valid persisted state', () => {
 			const original = deepFreeze( {
-				twentysixteen
+				1234567: {
+					twentyfifteen,
+					twentysixteen
+				},
+				wpcom: {
+					mood
+				}
 			} );
 			const state = items( original, { type: DESERIALIZE } );
 
@@ -142,11 +154,12 @@ describe( 'reducer', () => {
 
 		it( 'should not load invalid persisted state', () => {
 			const original = deepFreeze( {
-				'3d097cb7c5473c169bba0eb8e3c6cb64': {
-					ID: 841,
-					site_ID: 2916284,
-					global_ID: '3d097cb7c5473c169bba0eb8e3c6cb64',
-					title: 'Hello World'
+				1234567: {
+					twentyfifteen,
+					twentysixteen
+				},
+				'invalid-string-key': {
+					mood
 				}
 			} );
 			const state = items( original, { type: DESERIALIZE } );
