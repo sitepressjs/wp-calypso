@@ -19,9 +19,8 @@ import {
 import {
 	receiveTheme,
 	receiveThemes,
-	requestSiteThemes,
-	requestSiteTheme,
 	requestThemes,
+	requestSiteTheme
 } from '../actions';
 import useNock from 'test/helpers/use-nock';
 
@@ -34,7 +33,7 @@ describe( 'actions', () => {
 
 	describe( '#receiveTheme()', () => {
 		it( 'should return an action object', () => {
-			const theme = { ID: 841, title: 'Hello World' };
+			const theme = { id: 'twentysixteen', name: 'Twenty Sixteen' };
 			const action = receiveTheme( theme );
 
 			expect( action ).to.eql( {
@@ -46,7 +45,7 @@ describe( 'actions', () => {
 
 	describe( '#receiveThemes()', () => {
 		it( 'should return an action object', () => {
-			const themes = [ { ID: 841, title: 'Hello World' } ];
+			const themes = [ { id: 'twentysixteen', name: 'Twenty Sixteen' } ];
 			const action = receiveThemes( themes );
 
 			expect( action ).to.eql( {
@@ -60,85 +59,101 @@ describe( 'actions', () => {
 		useNock( ( nock ) => {
 			nock( 'https://public-api.wordpress.com:443' )
 				.persist()
-				.get( '/rest/v1.1/sites/2916284/themes' )
+				.get( '/rest/v1.2/themes' )
 				.reply( 200, {
 					found: 2,
 					themes: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Ribs & Chicken' }
+						{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+						{ ID: 'mood', name: 'Mood' }
 					]
 				} )
-				.get( '/rest/v1.1/sites/2916284/themes' )
-				.query( { search: 'Hello' } )
+				.get( '/rest/v1.2/themes' )
+				.query( { search: 'Sixteen' } )
 				.reply( 200, {
 					found: 1,
-					themes: [ { ID: 841, title: 'Hello World' } ]
+					themes: [ { ID: 'twentysixteen', name: 'Twenty Sixteen' } ]
 				} )
 				.get( '/rest/v1.1/sites/77203074/themes' )
+				.reply( 200, {
+					found: 2,
+					themes: [
+						{ ID: 'twentyfifteen', name: 'Twenty Fixteen' },
+						{ ID: 'twentysixteen', name: 'Twenty Sixteen' }
+					]
+				} )
+				.get( '/rest/v1.2/sites/77203074/themes' )
+				.query( { search: 'Sixteen' } )
+				.reply( 200, {
+					found: 1,
+					themes: [ { ID: 'twentysixteen', name: 'Twenty Sixteen' } ]
+				} )
+				.get( '/rest/v1.2/sites/77203074/themes' )
 				.reply( 403, {
 					error: 'authorization_required',
 					message: 'User cannot access this private blog.'
 				} );
 		} );
 
-		it( 'should dispatch fetch action when thunk triggered', () => {
-			requestSiteThemes( 2916284 )( spy );
+		context( 'with a wpcom site', () => {
+			it( 'should dispatch fetch action when thunk triggered', () => {
+				requestThemes( 2916284 )( spy );
 
-			expect( spy ).to.have.been.calledWith( {
-				type: THEMES_REQUEST,
-				siteId: 2916284,
-				query: {}
-			} );
-		} );
-
-		it( 'should dispatch themes receive action when request completes', () => {
-			return requestSiteThemes( 2916284 )( spy ).then( () => {
 				expect( spy ).to.have.been.calledWith( {
-					type: THEMES_RECEIVE,
-					themes: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Ribs & Chicken' }
-					]
+					type: THEMES_REQUEST,
+					siteId: 'wpcom',
+					query: {}
 				} );
 			} );
-		} );
 
-		it( 'should dispatch themes themes request success action when request completes', () => {
-			return requestSiteThemes( 2916284 )( spy ).then( () => {
-				expect( spy ).to.have.been.calledWith( {
-					type: THEMES_REQUEST_SUCCESS,
-					siteId: 2916284,
-					query: {},
-					found: 2,
-					themes: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Ribs & Chicken' }
-					]
+			it( 'should dispatch themes receive action when request completes', () => {
+				return requestThemes( 2916284 )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_RECEIVE,
+						themes: [
+							{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+							{ ID: 'mood', name: 'Mood' }
+						]
+					} );
 				} );
 			} );
-		} );
 
-		it( 'should dispatch themes request success action with query results', () => {
-			return requestSiteThemes( 2916284, { search: 'Hello' } )( spy ).then( () => {
-				expect( spy ).to.have.been.calledWith( {
-					type: THEMES_REQUEST_SUCCESS,
-					siteId: 2916284,
-					query: { search: 'Hello' },
-					found: 1,
-					themes: [
-						{ ID: 841, title: 'Hello World' }
-					]
+			it( 'should dispatch themes themes request success action when request completes', () => {
+				return requestThemes( 2916284 )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_REQUEST_SUCCESS,
+						siteId: 'wpcom',
+						query: {},
+						found: 2,
+						themes: [
+							{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+							{ ID: 'mood', name: 'Mood' }
+						]
+					} );
 				} );
 			} );
-		} );
 
-		it( 'should dispatch fail action when request fails', () => {
-			return requestSiteThemes( 77203074 )( spy ).then( () => {
-				expect( spy ).to.have.been.calledWith( {
-					type: THEMES_REQUEST_FAILURE,
-					siteId: 77203074,
-					query: {},
-					error: sinon.match( { message: 'User cannot access this private blog.' } )
+			it( 'should dispatch themes request success action with query results', () => {
+				return requestThemes( 2916284, false, { search: 'Sixteen' } )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_REQUEST_SUCCESS,
+						siteId: 'wpcom',
+						query: { search: 'Sixteen' },
+						found: 1,
+						themes: [
+							{ ID: 'twentysixteen', name: 'Twenty Sixteen' },
+						]
+					} );
+				} );
+			} );
+
+			it( 'should dispatch fail action when request fails', () => {
+				return requestThemes( 77203074 )( spy ).then( () => {
+					expect( spy ).to.have.been.calledWith( {
+						type: THEMES_REQUEST_FAILURE,
+						siteId: 77203074,
+						query: {},
+						error: sinon.match( { message: 'User cannot access this private blog.' } )
+					} );
 				} );
 			} );
 		} );
