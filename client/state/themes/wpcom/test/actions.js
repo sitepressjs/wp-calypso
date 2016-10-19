@@ -212,33 +212,6 @@ describe( 'actions', () => {
 		} );
 	} );
 
-	describe( '#requestThemes()', () => {
-		useNock( ( nock ) => {
-			nock( 'https://public-api.wordpress.com:443' )
-				.persist()
-				.get( '/rest/v1.1/me/themes' )
-				.reply( 200, {
-					found: 2,
-					themes: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Ribs & Chicken' }
-					]
-				} );
-		} );
-
-		it( 'should dispatch themes receive action when request completes', () => {
-			return requestThemes()( spy ).then( () => {
-				expect( spy ).to.have.been.calledWith( {
-					type: THEMES_RECEIVE,
-					themes: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Ribs & Chicken' }
-					]
-				} );
-			} );
-		} );
-	} );
-
 	describe( '#requestSiteTheme()', () => {
 		useNock( ( nock ) => {
 			nock( 'https://public-api.wordpress.com:443' )
