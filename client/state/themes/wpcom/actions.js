@@ -65,7 +65,7 @@ export function requestThemes( siteId, isJetpack = false, query = {} ) {
 			query
 		} );
 
-		return wpcom.undocumented.themes( siteIdToQuery, queryWithApiVersion ).then( ( { found, themes } ) => {
+		return wpcom.undocumented().themes( siteIdToQuery, queryWithApiVersion ).then( ( { found, themes } ) => {
 			dispatch( receiveThemes( themes ) );
 			dispatch( {
 				type: THEMES_REQUEST_SUCCESS,
