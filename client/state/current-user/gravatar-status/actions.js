@@ -9,6 +9,9 @@ import {
 	GRAVATAR_UPLOAD_REQUEST_SUCCESS,
 	GRAVATAR_UPLOAD_REQUEST_FAILURE
 } from 'state/action-types';
+import {
+	GRAVATAR_CACHE_EXPIRATION
+} from 'state/current-user/gravatar-status/constants';
 
 export function uploadGravatar( file, bearerToken, email ) {
 	return dispatch => {
@@ -21,12 +24,18 @@ export function uploadGravatar( file, bearerToken, email ) {
 			.send( data )
 			.set( 'Authorization', 'Bearer ' + bearerToken )
 			.then( () => {
-				dispatch( {
-					type: GRAVATAR_UPLOAD_RECEIVE
+				const fileReader = new window.FileReader( file );
+				fileReader.addEventListener( 'load', function() {
+					dispatch( {
+						type: GRAVATAR_UPLOAD_RECEIVE,
+						expiration: Date.now() + GRAVATAR_CACHE_EXPIRATION,
+						tempImage: fileReader.result
+					} );
+					dispatch( {
+						type: GRAVATAR_UPLOAD_REQUEST_SUCCESS
+					} );
 				} );
-				dispatch( {
-					type: GRAVATAR_UPLOAD_REQUEST_SUCCESS
-				} );
+				fileReader.readAsDataURL( file );
 			} )
 			.catch( () => {
 				dispatch( {

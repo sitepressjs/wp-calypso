@@ -12,14 +12,17 @@ import {
 	GRAVATAR_UPLOAD_REQUEST_SUCCESS,
 	GRAVATAR_UPLOAD_REQUEST_FAILURE
  } from 'state/action-types';
+import {
+	GRAVATAR_CACHE_EXPIRATION
+} from 'state/current-user/gravatar-status/constants';
 import { uploadGravatar } from '../actions';
 import useNock from 'test/helpers/use-nock';
 import useFakeDom from 'test/helpers/use-fake-dom';
-import { useSandbox } from 'test/helpers/use-sinon';
+import { useFakeTimers, useSandbox } from 'test/helpers/use-sinon';
+import noop from 'lodash/noop';
 
 describe( 'actions', () => {
 	let sandbox, spy;
-
 	useFakeDom();
 	useSandbox( newSandbox => {
 		sandbox = newSandbox;
@@ -35,18 +38,32 @@ describe( 'actions', () => {
 		} );
 
 		describe( 'successful request', () => {
+			const tempImageContent = 'tempImageContent';
+			const now = 1;
+			useFakeTimers( now );
 			useNock( ( nock ) => {
 				nock( 'https://api.gravatar.com' )
 					.persist()
 					.post( '/v1/upload-image' )
 					.reply( 200, 'Successful request' );
 			} );
+			before( () => {
+				window.FileReader = sandbox.stub().returns( {
+					readAsDataURL: noop,
+					addEventListener: function( event, callback ) {
+						this.result = tempImageContent;
+						callback();
+					}
+				} );
+			} );
 
 			it( 'dispatches receive action', () => {
 				return uploadGravatar( 'file', 'bearerToken', 'email' )( spy )
 					.then( () => {
 						expect( spy ).to.have.been.calledWith( {
-							type: GRAVATAR_UPLOAD_RECEIVE
+							type: GRAVATAR_UPLOAD_RECEIVE,
+							expiration: now + GRAVATAR_CACHE_EXPIRATION,
+							tempImage: tempImageContent
 						} );
 					} );
 			} );

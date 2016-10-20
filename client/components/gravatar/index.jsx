@@ -4,13 +4,19 @@
 import React from 'react';
 import url from 'url';
 import qs from 'querystring';
+import { connect } from 'react-redux';
 
 /**
  * Internal dependencies
  */
 import safeImageURL from 'lib/safe-image-url';
+import { getCurrentUserId } from 'state/current-user/selectors';
+import {
+	getCurrentUserTempImage,
+	getCurrentUserTempImageExpiration
+} from 'state/current-user/gravatar-status/selectors';
 
-module.exports = React.createClass( {
+export const Gravatar = React.createClass( {
 	displayName: 'Gravatar',
 
 	propTypes: {
@@ -64,10 +70,25 @@ module.exports = React.createClass( {
 		}
 
 		const alt = this.props.alt || this.props.user.display_name;
-		const avatarURL = this.getResizedImageURL( safeImageURL( this.props.user.avatar_URL ) );
+
+		let avatarURL = '';
+		if ( this.props.user.ID &&
+			this.props.user.ID === this.props.currentUserId &&
+			this.props.tempImageExpiration > Date.now() &&
+			this.props.tempImage ) {
+			avatarURL = this.props.tempImage;
+		} else {
+			avatarURL = this.getResizedImageURL( safeImageURL( this.props.user.avatar_URL ) );
+		}
 
 		return (
 			<img alt={ alt } className="gravatar" src={ avatarURL } width={ size } height={ size } onError={ this.onError } />
 		);
 	}
 } );
+
+export default connect( state => ( {
+	currentUserId: getCurrentUserId( state ),
+	tempImage: getCurrentUserTempImage( state ),
+	tempImageExpiration: getCurrentUserTempImageExpiration( state )
+} ) )( Gravatar );
