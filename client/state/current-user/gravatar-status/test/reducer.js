@@ -31,7 +31,7 @@ describe( 'reducer', () => {
 	describe( '#isUploading', () => {
 		it( 'returns false by default', () => {
 			const state = isUploading( undefined, {} );
-			expect( state ).to.eql( false );
+			expect( state ).to.equal( false );
 		} );
 
 		it( 'returns true when request is made', () => {
