@@ -16,6 +16,7 @@ import ReaderPostActions from 'blocks/reader-post-actions';
 import * as stats from 'reader/stats';
 import PostByline from './byline';
 import FeaturedAsset from './featured-asset';
+import PostGallery from './gallery';
 
 export default class RefreshPostCard extends React.Component {
 	static propTypes = {
@@ -83,8 +84,8 @@ export default class RefreshPostCard extends React.Component {
 
 	render() {
 		const { post, site, feed, onCommentClick } = this.props;
-		const isPhotoOnly = post.display_type & DisplayTypes.PHOTO_ONLY;
-		const isGallery = post.display_type & DisplayTypes.GALLERY;
+		const isPhotoOnly = !! ( post.display_type & DisplayTypes.PHOTO_ONLY );
+		const isGallery = !! ( post.display_type & DisplayTypes.GALLERY );
 		const title = truncate( post.title, {
 			length: 140,
 			separator: /,? +/
@@ -103,6 +104,7 @@ export default class RefreshPostCard extends React.Component {
 				<PostByline post={ post } site={ site } feed={ feed } />
 				<div className="reader-post-card__post">
 					{ featuredAsset }
+					{ isGallery && <PostGallery post={ post } /> }
 					<div className="reader-post-card__post-details">
 						<h1 className="reader-post-card__title">
 							<a className="reader-post-card__title-link" href={ post.URL }>{ title }</a>
