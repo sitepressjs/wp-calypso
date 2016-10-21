@@ -98,6 +98,15 @@ module.exports = {
 		defaultVariation: 'original',
 		allowAnyLocale: true,
 	},
+	paidNuxThankYouPage: {
+		datestamp: '20161021',
+		variations: {
+			original: 50,
+			emailNudgeOnTop: 50,
+		},
+		defaultVariation: 'original',
+		allowAnyLocale: true,
+	},
 	siteTitleStep: {
 		datestamp: '20160928',
 		variations: {
