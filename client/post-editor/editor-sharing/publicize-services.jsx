@@ -1,59 +1,65 @@
 /**
  * External dependencies
  */
-var React = require( 'react' );
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { uniq } from 'lodash';
 
 /**
  * Internal dependencies
  */
-var serviceConnections = require( 'my-sites/sharing/connections/service-connections' ),
-	EditorSharingPublicizeConnection = require( './publicize-connection' );
+import EditorSharingPublicizeConnection from './publicize-connection';
+import { getCurrentUserId } from 'state/current-user/selectors';
 
-module.exports = React.createClass( {
-	displayName: 'EditorSharingPublicizeServices',
+class EditorSharingPublicizeServices extends Component {
+	static propTypes = {
+		post: PropTypes.object,
+		siteId: PropTypes.number.isRequired,
+		connections: PropTypes.array.isRequired,
+		newConnectionPopup: PropTypes.func.isRequired
+	};
 
-	propTypes: {
-		post: React.PropTypes.object,
-		siteId: React.PropTypes.number.isRequired,
-		connections: React.PropTypes.array.isRequired,
-		newConnectionPopup: React.PropTypes.func.isRequired
-	},
+	renderServices() {
+		const services = uniq( this.props.connections.map( ( connection ) => ( {
+			ID: connection.service,
+			label: connection.label,
+		} ) ), 'ID' );
 
-	renderServices: function() {
-		var services = serviceConnections.getServicesFromConnections( this.props.connections );
+		return services.map( ( service ) =>
+			<li key={ service.ID } className="editor-sharing__publicize-service">
+				<h5 className="editor-sharing__publicize-service-heading">{ service.label }</h5>
+				{ this.renderConnections( service.ID ) }
+			</li>
+		);
+	}
 
-		return services.map( function( service ) {
-			return (
-				<li key={ service.ID } className="editor-sharing__publicize-service">
-					<h5 className="editor-sharing__publicize-service-heading">{ service.label }</h5>
-					{ this.renderConnections( service.ID ) }
-				</li>
-			);
-		}, this );
-	},
-
-	renderConnections: function( serviceName ) {
-		const connections = serviceConnections.getConnectionsAvailableToCurrentUser(
-			serviceName,
-			this.props.connections
+	renderConnections( serviceName ) {
+		// Only include connections of the specified service, filtered by
+		// those owned by the current user or shared.
+		const connections = this.props.connections.filter( ( connection ) =>
+			connection.service === serviceName && ( connection.keyring_connection_user_ID === this.props.userId || connection.shared )
 		);
 
-		return connections.map( function( connection ) {
-			return (
-				<EditorSharingPublicizeConnection
-					key={ connection.ID }
-					post={ this.props.post }
-					connection={ connection }
-					onRefresh={ this.props.newConnectionPopup } />
-			);
-		}, this );
-	},
+		return connections.map( ( connection ) =>
+			<EditorSharingPublicizeConnection
+				key={ connection.ID }
+				post={ this.props.post }
+				connection={ connection }
+				onRefresh={ this.props.newConnectionPopup } />
+		);
+	}
 
-	render: function() {
+	render() {
 		return (
 			<ul className="editor-sharing__publicize-services">
 				{ this.renderServices() }
 			</ul>
 		);
 	}
-} );
+}
+
+export default connect(
+	( state ) => ( {
+		userId: getCurrentUserId( state ),
+	} ),
+)( EditorSharingPublicizeServices );
