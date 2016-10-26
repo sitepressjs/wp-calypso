@@ -4,6 +4,7 @@
 import request from 'superagent';
 
 import {
+	GRAVATAR_REMOVE_TEMPORARY,
 	GRAVATAR_UPLOAD_RECEIVE,
 	GRAVATAR_UPLOAD_REQUEST,
 	GRAVATAR_UPLOAD_REQUEST_SUCCESS,
@@ -42,5 +43,11 @@ export function uploadGravatar( file, bearerToken, email ) {
 					type: GRAVATAR_UPLOAD_REQUEST_FAILURE
 				} );
 			} );
+	};
+}
+
+export function removeTemporaryGravatar() {
+	return {
+		type: GRAVATAR_REMOVE_TEMPORARY
 	};
 }

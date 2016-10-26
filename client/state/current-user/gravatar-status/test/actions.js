@@ -8,6 +8,7 @@ import { noop } from 'lodash';
  * Internal dependencies
  */
 import {
+	GRAVATAR_REMOVE_TEMPORARY,
 	GRAVATAR_UPLOAD_RECEIVE,
 	GRAVATAR_UPLOAD_REQUEST,
 	GRAVATAR_UPLOAD_REQUEST_SUCCESS,
@@ -16,7 +17,10 @@ import {
 import {
 	GRAVATAR_CACHE_EXPIRATION
 } from 'state/current-user/gravatar-status/constants';
-import { uploadGravatar } from '../actions';
+import {
+	removeTemporaryGravatar,
+	uploadGravatar
+} from '../actions';
 import useNock from 'test/helpers/use-nock';
 import useFakeDom from 'test/helpers/use-fake-dom';
 import { useFakeTimers, useSandbox } from 'test/helpers/use-sinon';
@@ -92,6 +96,14 @@ describe( 'actions', () => {
 							type: GRAVATAR_UPLOAD_REQUEST_FAILURE
 						} );
 					} );
+			} );
+		} );
+	} );
+
+	describe( '#removeTemporaryGravatar', () => {
+		it( 'dispatches a remove action', () => {
+			expect( removeTemporaryGravatar() ).to.eql( {
+				type: GRAVATAR_REMOVE_TEMPORARY
 			} );
 		} );
 	} );

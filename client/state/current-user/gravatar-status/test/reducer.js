@@ -7,6 +7,7 @@ import { expect } from 'chai';
  * Internal dependencies
  */
 import {
+	GRAVATAR_REMOVE_TEMPORARY,
 	GRAVATAR_UPLOAD_RECEIVE,
 	GRAVATAR_UPLOAD_REQUEST,
 	GRAVATAR_UPLOAD_REQUEST_SUCCESS,
@@ -109,6 +110,17 @@ describe( 'reducer', () => {
 				expiration: 123,
 				src: 'imageString'
 			} );
+		} );
+
+		it( 'returns empty state when remove action is received', () => {
+			const originalState = {
+				expiration: 123,
+				tempImage: 'imageString'
+			};
+			const newState = tempImage( originalState, {
+				type: GRAVATAR_REMOVE_TEMPORARY,
+			} );
+			expect( newState ).to.eql( {} );
 		} );
 
 		it( 'persists state', () => {

@@ -15,6 +15,9 @@ import {
 	getCurrentUserTempImage,
 	getCurrentUserTempImageExpiration
 } from 'state/current-user/gravatar-status/selectors';
+import {
+	removeTemporaryGravatar
+} from 'state/current-user/gravatar-status/actions';
 
 export const Gravatar = React.createClass( {
 	displayName: 'Gravatar',
@@ -37,6 +40,16 @@ export const Gravatar = React.createClass( {
 		return {
 			failedToLoad: false
 		};
+	},
+
+	componentDidMount() {
+		const {
+			tempImageExpiration,
+			removeTemporaryGravatar: removeTemporaryGravatarAction
+		} = this.props;
+		if ( tempImageExpiration && Date.now() > tempImageExpiration ) {
+			removeTemporaryGravatarAction();
+		}
 	},
 
 	getResizedImageURL( imageURL ) {
@@ -74,7 +87,6 @@ export const Gravatar = React.createClass( {
 		let avatarURL = '';
 		if ( this.props.user.ID &&
 			this.props.user.ID === this.props.currentUserId &&
-			this.props.tempImageExpiration > Date.now() &&
 			this.props.tempImage ) {
 			avatarURL = this.props.tempImage;
 		} else {
@@ -91,4 +103,6 @@ export default connect( state => ( {
 	currentUserId: getCurrentUserId( state ),
 	tempImage: getCurrentUserTempImage( state ),
 	tempImageExpiration: getCurrentUserTempImageExpiration( state )
-} ) )( Gravatar );
+} ),
+	{ removeTemporaryGravatar }
+)( Gravatar );

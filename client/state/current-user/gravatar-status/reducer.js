@@ -7,6 +7,7 @@ import { combineReducers } from 'redux';
  * Internal dependencies
  */
 import {
+	GRAVATAR_REMOVE_TEMPORARY,
 	GRAVATAR_UPLOAD_RECEIVE,
 	GRAVATAR_UPLOAD_REQUEST,
 	GRAVATAR_UPLOAD_REQUEST_SUCCESS,
@@ -27,7 +28,8 @@ export const tempImage = createReducer( {}, {
 			expiration: action.expiration,
 			src: action.src
 		};
-	}
+	},
+	[ GRAVATAR_REMOVE_TEMPORARY ]: () => ( {} )
 }, tempImageSchema );
 
 export default combineReducers( {
