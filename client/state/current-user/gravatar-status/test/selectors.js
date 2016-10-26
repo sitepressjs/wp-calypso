@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { expect } from 'chai';
-import set from 'lodash/set';
+import { set } from 'lodash';
 
 /**
  * Internal dependencies

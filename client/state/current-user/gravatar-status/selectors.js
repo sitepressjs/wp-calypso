@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import has from 'lodash/has';
+import { has } from 'lodash';
 
 export function isCurrentUserUploadingGravatar( state ) {
 	return has( state, 'currentUser.gravatarStatus.isUploading' ) &&
