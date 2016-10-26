@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { expect } from 'chai';
+import noop from 'lodash/noop';
 
 /**
  * Internal dependencies
@@ -19,7 +20,6 @@ import { uploadGravatar } from '../actions';
 import useNock from 'test/helpers/use-nock';
 import useFakeDom from 'test/helpers/use-fake-dom';
 import { useFakeTimers, useSandbox } from 'test/helpers/use-sinon';
-import noop from 'lodash/noop';
 
 describe( 'actions', () => {
 	let sandbox, spy;
