@@ -20,11 +20,15 @@ describe( 'selectors', () => {
 		} );
 
 		it( 'returns state when defined', () => {
-			const state = {};
-			set( state, 'currentUser.gravatarStatus.isUploading', true );
-			expect( isCurrentUserUploadingGravatar( state ) ).to.equal( true );
-			set( state, 'currentUser.gravatarStatus.isUploading', false );
-			expect( isCurrentUserUploadingGravatar( state ) ).to.equal( false );
+			const uploadingState = {};
+			set( uploadingState, 'currentUser.gravatarStatus.isUploading', true );
+			expect( isCurrentUserUploadingGravatar( uploadingState ) )
+				.to.equal( true );
+
+			const notUploadingState = {};
+			set( notUploadingState, 'currentUser.gravatarStatus.isUploading', false );
+			expect( isCurrentUserUploadingGravatar( notUploadingState ) )
+				.to.equal( false );
 		} );
 	} );
 
