@@ -21,6 +21,7 @@ class SharingServiceConnectedAccounts extends Component {
 		onRemoveConnection: PropTypes.func,         // Handler to invoke when removing an existing connection
 		onToggleSitewideConnection: PropTypes.func, // Handler to invoke when toggling a connection to be shared sitewide
 		service: PropTypes.object.isRequired,       // The service object
+		translate: PropTypes.func,
 	};
 
 	static defaultProps = {
