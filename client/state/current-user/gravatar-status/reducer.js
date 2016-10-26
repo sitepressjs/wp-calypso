@@ -13,7 +13,7 @@ import {
 	GRAVATAR_UPLOAD_REQUEST_FAILURE
 } from 'state/action-types';
 import { createReducer } from 'state/utils';
-import { itemsSchema } from './schema';
+import { tempImageSchema } from './schema';
 
 export const isUploading = createReducer( false, {
 	[ GRAVATAR_UPLOAD_REQUEST ]: () => true,
@@ -21,16 +21,16 @@ export const isUploading = createReducer( false, {
 	[ GRAVATAR_UPLOAD_REQUEST_FAILURE ]: () => false
 } );
 
-export const items = createReducer( {}, {
+export const tempImage = createReducer( {}, {
 	[ GRAVATAR_UPLOAD_RECEIVE ]: ( state, action ) => {
 		return {
 			expiration: action.expiration,
-			tempImage: action.tempImage
+			src: action.src
 		};
 	}
-}, itemsSchema );
+}, tempImageSchema );
 
 export default combineReducers( {
 	isUploading,
-	items
+	tempImage
 } );

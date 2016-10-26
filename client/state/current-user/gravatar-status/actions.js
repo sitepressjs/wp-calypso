@@ -29,7 +29,7 @@ export function uploadGravatar( file, bearerToken, email ) {
 					dispatch( {
 						type: GRAVATAR_UPLOAD_RECEIVE,
 						expiration: Date.now() + GRAVATAR_CACHE_EXPIRATION,
-						tempImage: fileReader.result
+						src: fileReader.result
 					} );
 					dispatch( {
 						type: GRAVATAR_UPLOAD_REQUEST_SUCCESS

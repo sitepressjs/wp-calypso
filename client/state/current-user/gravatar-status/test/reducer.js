@@ -16,7 +16,7 @@ import {
 } from 'state/action-types';
 import reducer, {
 	isUploading,
-	items
+	tempImage
 } from '../reducer';
 import { useSandbox } from 'test/helpers/use-sinon';
 
@@ -24,7 +24,7 @@ describe( 'reducer', () => {
 	it( 'exports expected reducer keys', () => {
 		expect( reducer( undefined, {} ) ).to.have.keys( [
 			'isUploading',
-			'items'
+			'tempImage'
 		] );
 	} );
 
@@ -87,7 +87,7 @@ describe( 'reducer', () => {
 		} );
 	} );
 
-	describe( '#items', () => {
+	describe( '#tempImage', () => {
 		let sandbox;
 		useSandbox( newSandbox => {
 			sandbox = newSandbox;
@@ -95,46 +95,46 @@ describe( 'reducer', () => {
 		} );
 
 		it( 'returns empty object by default', () => {
-			const state = items( undefined, {} );
+			const state = tempImage( undefined, {} );
 			expect( state ).to.eql( {} );
 		} );
 
-		it( 'returns temp image and date when response is received', () => {
-			const state = items( undefined, {
+		it( 'returns expiration date and temp image src when response is received', () => {
+			const state = tempImage( undefined, {
 				type: GRAVATAR_UPLOAD_RECEIVE,
 				expiration: 123,
-				tempImage: 'imageString'
+				src: 'imageString'
 			} );
 			expect( state ).to.eql( {
 				expiration: 123,
-				tempImage: 'imageString'
+				src: 'imageString'
 			} );
 		} );
 
 		it( 'persists state', () => {
 			const original = {
 				expiration: 123,
-				tempImage: 'imageString'
+				src: 'imageString'
 			};
-			const state = items( original, { type: SERIALIZE } );
+			const state = tempImage( original, { type: SERIALIZE } );
 			expect( state ).to.eql( original );
 		} );
 
 		it( 'loads persisted state', () => {
 			const original = {
 				expiration: 123,
-				tempImage: 'imageString'
+				src: 'imageString'
 			};
-			const state = items( original, { type: DESERIALIZE } );
+			const state = tempImage( original, { type: DESERIALIZE } );
 			expect( state ).to.eql( original );
 		} );
 
 		it( 'loads default state when schema is incorrect', () => {
 			const original = {
 				expiration: '123',
-				tempImage: 42
+				src: 42
 			};
-			const state = items( original, { type: DESERIALIZE } );
+			const state = tempImage( original, { type: DESERIALIZE } );
 			expect( state ).to.eql( {} );
 		} );
 	} );

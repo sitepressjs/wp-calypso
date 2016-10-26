@@ -38,7 +38,7 @@ describe( 'actions', () => {
 		} );
 
 		describe( 'successful request', () => {
-			const tempImageContent = 'tempImageContent';
+			const tempImageSrc = 'tempImageSrc';
 			const now = 1;
 			useFakeTimers( now );
 			useNock( ( nock ) => {
@@ -51,7 +51,7 @@ describe( 'actions', () => {
 				window.FileReader = sandbox.stub().returns( {
 					readAsDataURL: noop,
 					addEventListener: function( event, callback ) {
-						this.result = tempImageContent;
+						this.result = tempImageSrc;
 						callback();
 					}
 				} );
@@ -63,7 +63,7 @@ describe( 'actions', () => {
 						expect( spy ).to.have.been.calledWith( {
 							type: GRAVATAR_UPLOAD_RECEIVE,
 							expiration: now + GRAVATAR_CACHE_EXPIRATION,
-							tempImage: tempImageContent
+							src: tempImageSrc
 						} );
 					} );
 			} );

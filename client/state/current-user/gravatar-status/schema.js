@@ -1,8 +1,8 @@
-export const itemsSchema = {
+export const tempImageSchema = {
 	type: [ 'object', 'null' ],
 	additionalProperties: false,
 	properties: {
 		expiration: { type: 'integer' },
-		tempImage: { type: 'string' }
+		src: { type: 'string' }
 	}
 };

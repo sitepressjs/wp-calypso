@@ -9,11 +9,11 @@ export function isCurrentUserUploadingGravatar( state ) {
 }
 
 export function getCurrentUserTempImage( state ) {
-	return has( state, 'currentUser.gravatarStatus.items.tempImage' ) &&
-		state.currentUser.gravatarStatus.items.tempImage;
+	return has( state, 'currentUser.gravatarStatus.tempImage.src' ) &&
+		state.currentUser.gravatarStatus.tempImage.src;
 }
 
 export function getCurrentUserTempImageExpiration( state ) {
-	return has( state, 'currentUser.gravatarStatus.items.expiration' ) &&
-		state.currentUser.gravatarStatus.items.expiration;
+	return has( state, 'currentUser.gravatarStatus.tempImage.expiration' ) &&
+		state.currentUser.gravatarStatus.tempImage.expiration;
 }

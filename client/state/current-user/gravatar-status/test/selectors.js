@@ -35,7 +35,7 @@ describe( 'selectors', () => {
 
 		it( 'returns the temporary image', () => {
 			const state = {};
-			set( state, 'currentUser.gravatarStatus.items.tempImage', 'image' );
+			set( state, 'currentUser.gravatarStatus.tempImage.src', 'image' );
 			expect( getCurrentUserTempImage( state ) ).to.equal( 'image' );
 		} );
 	} );
@@ -47,7 +47,7 @@ describe( 'selectors', () => {
 
 		it( 'returns the date', () => {
 			const state = {};
-			set( state, 'currentUser.gravatarStatus.items.expiration', 123 );
+			set( state, 'currentUser.gravatarStatus.tempImage.expiration', 123 );
 			expect( getCurrentUserTempImageExpiration( state ) ).to.equal( 123 );
 		} );
 	} );
