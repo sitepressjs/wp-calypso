@@ -91,10 +91,9 @@ export default class RefreshPostCard extends React.Component {
 			separator: /,? +/
 		} );
 		const featuredAsset = ( <FeaturedAsset post={ post } /> );
-
 		const classes = classnames( 'reader-post-card', {
 			'has-thumbnail': !! featuredAsset,
-			'is-photo': isPhotoOnly
+			'is-photo': isPhotoOnly,
 			'is-gallery': isGallery
 		} );
 		const showExcerpt = ! isPhotoOnly && ! isGallery;
