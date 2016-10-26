@@ -331,9 +331,9 @@ const SharingService = React.createClass( {
 			if ( keyringConnectionId ) {
 				// Since we have a Keyring connection to work with, we can immediately
 				// create or update the connection
-				const keyringConnections = filter( this.props.fetchConnections( siteId ), { keyringConnectionId: keyringConnectionId } );
+				const keyringConnections = filter( this.props.keyringConnections, { ID: keyringConnectionId } );
 
-				if ( siteId && keyringConnections.length ) {
+				if ( siteId && externalUserId && keyringConnections.length ) {
 					// If a Keyring connection is already in use by another connection,
 					// we should trigger an update. There should only be one connection,
 					// so we're correct in using the connection ID from the first
@@ -352,10 +352,6 @@ const SharingService = React.createClass( {
 					popupMonitor.getScreenCenterSpecs( 780, 500 ) );
 
 				popupMonitor.once( 'close', () => {
-					// When the user has finished authorizing the connection
-					// (or otherwise closed the window), force a refresh
-					_this.props.fetchConnections( siteId );
-
 					// In the case that a Keyring connection doesn't exist, wait for app
 					// authorization to occur, then display with the available connections
 					if ( this.didKeyringConnectionSucceed( service.ID, siteId ) && 'publicize' === service.type ) {
@@ -462,16 +458,14 @@ const SharingService = React.createClass( {
 				className={ 'sharing-service__content ' + ( this.props.isFetching ? 'is-placeholder' : '' ) }>
 				<ServiceExamples service={ this.props.service } site={ this.props.site } />
 				<ServiceConnectedAccounts
-					site={ this.props.site }
-					user={ this.props.user }
-					service={ this.props.service }
 					connections={ this.props.siteUserConnections }
-					onAddConnection={ this.connect }
-					onRemoveConnection={ this.disconnect }
 					isDisconnecting={ this.state.isDisconnecting }
-					onRefreshConnection={ this.refresh }
 					isRefreshing={ this.state.isRefreshing }
-					onToggleSitewideConnection={ this.toggleSitewideConnection } />
+					onAddConnection={ this.connect }
+					onRefreshConnection={ this.refresh }
+					onRemoveConnection={ this.disconnect }
+					onToggleSitewideConnection={ this.toggleSitewideConnection }
+					service={ this.props.service } />
 				<ServiceTip service={ this.props.service } />
 			</div> );
 
