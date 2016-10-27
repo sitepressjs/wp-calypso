@@ -466,7 +466,7 @@ const SharingService = React.createClass( {
 		const content = (
 			<div
 				className={ 'sharing-service__content ' + ( this.props.isFetching ? 'is-placeholder' : '' ) }>
-				<ServiceExamples service={ this.props.service } site={ this.props.site } />
+				<ServiceExamples service={ this.props.service } />
 				<ServiceConnectedAccounts
 					connections={ this.props.siteUserConnections }
 					isDisconnecting={ this.state.isDisconnecting }
