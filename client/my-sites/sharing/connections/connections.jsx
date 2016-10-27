@@ -7,6 +7,8 @@ import { localize } from 'i18n-calypso';
 /**
  * Internal dependencies
  */
+import QueryKeyringConnections from 'components/data/query-keyring-connections';
+import QueryKeyringServices from 'components/data/query-keyring-services';
 import SharingServicesGroup from './services-group';
 
 class SharingConnections extends Component {
@@ -18,6 +20,8 @@ class SharingConnections extends Component {
 	render() {
 		return (
 			<div id="sharing-connections" className="sharing-settings sharing-connections">
+				<QueryKeyringConnections />
+				<QueryKeyringServices />
 				<SharingServicesGroup
 					type="publicize"
 					title={ this.props.translate( 'Publicize Your Posts' ) }
