@@ -21,11 +21,15 @@ import { localize } from 'i18n-calypso';
 import Spinner from 'components/spinner';
 import { getToken as getOauthToken } from 'lib/oauth-token';
 import { uploadGravatar } from 'state/current-user/gravatar-status/actions';
+import ImageEditor from 'blocks/image-editor';
 
 export class EditGravatar extends Component {
 	constructor() {
 		super( ...arguments );
-		this.handleOnPick = this.handleOnPick.bind( this );
+		this.onReceiveFile = this.onReceiveFile.bind( this );
+		this.onImageEditorDone = this.onImageEditorDone.bind( this );
+		this.hideImageEditor = this.hideImageEditor.bind( this );
+		this.state = { isEditingImage: false, file: false };
 	}
 
 	static propTypes = {
@@ -35,13 +39,21 @@ export class EditGravatar extends Component {
 		isUploading: PropTypes.bool,
 	};
 
-	handleOnPick( files ) {
-		const { uploadGravatar: uploadGravatarAction, user } = this.props;
+	onReceiveFile( files ) {
 		console.log( 'you picked', JSON.stringify( files[ 0 ].name ) );
+		const imageObjectUrl = window.URL.createObjectURL( files[ 0 ] );
+		this.setState( {
+			isEditingImage: true,
+			file: imageObjectUrl
+		} );
+	}
+
+	onImageEditorDone( error, imageBlob ) {
+		const { user } = this.props;
+		this.hideImageEditor();
 
 		// check for bearerToken from desktop app
 		let bearerToken = getOauthToken();
-
 		if ( ! bearerToken ) {
 			bearerToken = localStorage.getItem( 'bearerToken' );
 		}
@@ -49,9 +61,28 @@ export class EditGravatar extends Component {
 		// send gravatar request
 		if ( bearerToken ) {
 			console.log( 'Got the bearerToken, sending request' );
-			uploadGravatarAction( files[ 0 ], bearerToken, user.email, user.ID );
+			this.props.uploadGravatar( imageBlob, bearerToken, user.email, user.ID );
 		} else {
 			console.log( 'Oops - no bearer token.' );
+		}
+	}
+
+	hideImageEditor() {
+		this.setState( {
+			isEditingImage: false,
+			file: false
+		} );
+	}
+
+	renderImageEditor() {
+		if ( this.state.isEditingImage ) {
+			return (
+				<ImageEditor
+					media={ { src: this.state.file } }
+					onDone={ this.onImageEditorDone }
+					onCancel={ this.hideImageEditor }
+				/>
+			);
 		}
 	}
 
@@ -82,13 +113,14 @@ export class EditGravatar extends Component {
 					{ translate( 'To change, select an image or ' +
 					'drag and drop a picture from your computer.' ) }
 				</p>
-				<FilePicker accept="image/*" onPick={ this.handleOnPick }>
+				<FilePicker accept="image/*" onPick={ this.onReceiveFile }>
 					<Button
 						disabled={ userIsOffline || isUploading || ! user.email_verified }
 					>
 						{ translate( 'Select Image' ) }
 					</Button>
 				</FilePicker>
+				{ this.renderImageEditor() }
 			</div>
 		);
 	}
