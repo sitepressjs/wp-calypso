@@ -10,10 +10,9 @@ import { connect } from 'react-redux';
  * Internal dependencies
  */
 import safeImageURL from 'lib/safe-image-url';
-import { getCurrentUserId } from 'state/current-user/selectors';
 import {
-	getCurrentUserTempImage,
-	getCurrentUserTempImageExpiration
+	getCurrentUserTempGravatarExpiration,
+	getUserTempGravatar,
 } from 'state/current-user/gravatar-status/selectors';
 import {
 	removeTemporaryGravatar
@@ -84,14 +83,8 @@ export const Gravatar = React.createClass( {
 
 		const alt = this.props.alt || this.props.user.display_name;
 
-		let avatarURL = '';
-		if ( this.props.user.ID &&
-			this.props.user.ID === this.props.currentUserId &&
-			this.props.tempImage ) {
-			avatarURL = this.props.tempImage;
-		} else {
-			avatarURL = this.getResizedImageURL( safeImageURL( this.props.user.avatar_URL ) );
-		}
+		const avatarURL = this.props.tempImage ||
+			this.getResizedImageURL( safeImageURL( this.props.user.avatar_URL ) );
 
 		return (
 			<img alt={ alt } className="gravatar" src={ avatarURL } width={ size } height={ size } onError={ this.onError } />
@@ -99,10 +92,9 @@ export const Gravatar = React.createClass( {
 	}
 } );
 
-export default connect( state => ( {
-	currentUserId: getCurrentUserId( state ),
-	tempImage: getCurrentUserTempImage( state ),
-	tempImageExpiration: getCurrentUserTempImageExpiration( state )
+export default connect( ( state, ownProps ) => ( {
+	tempImage: getUserTempGravatar( state, ownProps.user.ID ),
+	tempImageExpiration: getCurrentUserTempGravatarExpiration( state ),
 } ),
 	{ removeTemporaryGravatar }
 )( Gravatar );
