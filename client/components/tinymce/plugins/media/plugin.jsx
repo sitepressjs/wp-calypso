@@ -15,7 +15,6 @@ import closest from 'component-closest';
  * Internal dependencies
  */
 import SiteListFactory from 'lib/sites-list';
-const sites = SiteListFactory();
 import PostActions from 'lib/posts/actions';
 import PostEditStore from 'lib/posts/post-edit-store';
 import MediaConstants from 'lib/media/constants';
@@ -23,7 +22,6 @@ import MediaActions from 'lib/media/actions';
 import MediaUtils from 'lib/media/utils';
 import { deserialize } from 'lib/media-serialization';
 import MediaMarkup from 'post-editor/media-modal/markup';
-import { ModalViews } from 'post-editor/media-modal/constants';
 import MediaStore from 'lib/media/store';
 import MediaLibrarySelectedData from 'components/data/media-library-selected-data';
 import EditorMediaModal from 'post-editor/media-modal';
@@ -35,12 +33,14 @@ import Gridicon from 'components/gridicon';
 import config from 'config';
 import { getSelectedSite } from 'state/ui/selectors';
 import { setEditorMediaModalView } from 'state/ui/editor/actions';
+import { ModalViews } from 'state/ui/media-modal/constants';
 
 /**
  * Module variables
  */
 const REGEXP_IMG = /<img\s[^>]*\/?>/ig,
-	SIZE_ORDER = [ 'thumbnail', 'medium', 'large', 'full' ];
+	SIZE_ORDER = [ 'thumbnail', 'medium', 'large', 'full' ],
+	sites = SiteListFactory();
 
 function mediaButton( editor ) {
 	const store = editor.getParam( 'redux_store' );
@@ -49,22 +49,20 @@ function mediaButton( editor ) {
 		return;
 	}
 
-	const { getState, subscribe } = store;
+	const { getState } = store;
 
 	let nodes = {},
 		resizeEditor,
-		selectedSite = getSelectedSite( getState() ),
 		updateMedia;
 
-	subscribe( () => {
-		selectedSite = getSelectedSite( getState() );
-	} );
+	const getSelectedSiteFromState = () => getSelectedSite( getState() );
 
 	function insertMedia( markup ) {
 		editor.execCommand( 'mceInsertContent', false, markup );
 	}
 
 	function renderModal( props = {}, options = {} ) {
+		const selectedSite = getSelectedSiteFromState();
 		if ( ! selectedSite ) {
 			return;
 		}
@@ -149,7 +147,7 @@ function mediaButton( editor ) {
 		let isTransientDetected = false,
 			transients = 0,
 			content, images;
-
+		const selectedSite = getSelectedSiteFromState();
 		if ( ! selectedSite ) {
 			return;
 		}
@@ -203,7 +201,7 @@ function mediaButton( editor ) {
 				// already exist in the current markup, but otherwise only force
 				// update ID and URL attributes to their new values
 				const merged = assign( {}, media, current.media, pick( media, 'ID', 'URL' ), {
-					transient: !! media.transient
+					'transient': !! media.transient
 				} );
 				const options = assign( {}, current.appearance, {
 					forceResize: ! media.transient && current.media.width && current.media.width !== media.width
@@ -295,6 +293,7 @@ function mediaButton( editor ) {
 	}
 
 	editor.addCommand( 'wpcomAddMedia', () => {
+		const selectedSite = getSelectedSiteFromState();
 		if ( selectedSite ) {
 			MediaActions.clearValidationErrors( selectedSite.ID );
 		}
@@ -326,7 +325,8 @@ function mediaButton( editor ) {
 		stateSelector: '.wp-caption',
 		onclick: function() {
 			const node = editor.selection.getStart(),
-				parsed = deserialize( node );
+				parsed = deserialize( node ),
+				selectedSite = getSelectedSiteFromState();
 			let content;
 
 			if ( ! parsed || ! selectedSite ) {
@@ -392,9 +392,9 @@ function mediaButton( editor ) {
 	} );
 
 	function resize( increment ) {
-		const node = editor.selection.getStart();
-		const parsed = deserialize( node );
-
+		const node = editor.selection.getStart(),
+			parsed = deserialize( node ),
+			selectedSite = getSelectedSiteFromState();
 		if ( ! parsed || ! selectedSite ) {
 			return;
 		}
@@ -461,6 +461,7 @@ function mediaButton( editor ) {
 	}
 
 	function toggleSizingControls( increase, event ) {
+		const selectedSite = getSelectedSiteFromState();
 		if ( ! event.element || 'IMG' !== event.element.nodeName || ! selectedSite ) {
 			return;
 		}
@@ -518,6 +519,7 @@ function mediaButton( editor ) {
 	} );
 
 	editor.addCommand( 'wpcomEditGallery', function( content ) {
+		const selectedSite = getSelectedSiteFromState();
 		if ( ! selectedSite ) {
 			return;
 		}
@@ -576,6 +578,7 @@ function mediaButton( editor ) {
 	}
 
 	function fetchUnknownImages( event ) {
+		const selectedSite = getSelectedSiteFromState();
 		if ( ! selectedSite ) {
 			return;
 		}
