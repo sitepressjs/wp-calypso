@@ -62,12 +62,13 @@ describe( 'actions', () => {
 			} );
 
 			it( 'dispatches receive action', () => {
-				return uploadGravatar( 'file', 'bearerToken', 'email' )( spy )
+				return uploadGravatar( 'file', 'bearerToken', 'email', 'userId' )( spy )
 					.then( () => {
 						expect( spy ).to.have.been.calledWith( {
 							type: GRAVATAR_UPLOAD_RECEIVE,
 							expiration: now + GRAVATAR_CACHE_EXPIRATION,
-							src: tempImageSrc
+							src: tempImageSrc,
+							userId: 'userId'
 						} );
 					} );
 			} );

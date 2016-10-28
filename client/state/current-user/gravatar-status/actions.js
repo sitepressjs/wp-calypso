@@ -14,7 +14,7 @@ import {
 	GRAVATAR_CACHE_EXPIRATION
 } from 'state/current-user/gravatar-status/constants';
 
-export function uploadGravatar( file, bearerToken, email ) {
+export function uploadGravatar( file, bearerToken, email, userId ) {
 	return dispatch => {
 		dispatch( { type: GRAVATAR_UPLOAD_REQUEST } );
 		const data = new window.FormData();
@@ -30,7 +30,8 @@ export function uploadGravatar( file, bearerToken, email ) {
 					dispatch( {
 						type: GRAVATAR_UPLOAD_RECEIVE,
 						expiration: Date.now() + GRAVATAR_CACHE_EXPIRATION,
-						src: fileReader.result
+						src: fileReader.result,
+						userId: userId
 					} );
 					dispatch( {
 						type: GRAVATAR_UPLOAD_REQUEST_SUCCESS

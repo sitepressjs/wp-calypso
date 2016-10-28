@@ -49,7 +49,7 @@ export class EditGravatar extends Component {
 		// send gravatar request
 		if ( bearerToken ) {
 			console.log( 'Got the bearerToken, sending request' );
-			uploadGravatarAction( files[ 0 ], bearerToken, user.email );
+			uploadGravatarAction( files[ 0 ], bearerToken, user.email, user.ID );
 		} else {
 			console.log( 'Oops - no bearer token.' );
 		}

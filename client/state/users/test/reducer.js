@@ -7,6 +7,7 @@ import { expect } from 'chai';
  * Internal dependencies
  */
 import {
+	GRAVATAR_UPLOAD_RECEIVE,
 	USER_RECEIVE,
 	DESERIALIZE,
 	SERIALIZE
@@ -59,6 +60,37 @@ describe( 'reducer', () => {
 			expect( state ).to.eql( {
 				73705554: { ID: 73705554, login: 'testtwosites2014' }
 			} );
+		} );
+
+		it( 'should update Gravatar URL when new Gravatar is uploaded', () => {
+			const original = Object.freeze( {
+				73705554: { ID: 73705554, avatar_URL: 'https://www.example.com' },
+				73705672: { ID: 73705672, avatar_URL: 'https://www.73705672.com' }
+			} );
+			const state = items( original, {
+				type: GRAVATAR_UPLOAD_RECEIVE,
+				expiration: 1,
+				src: 'tempImageSrc',
+				userId: 73705554
+			} );
+
+			expect( state ).to.eql( {
+				73705554: { ID: 73705554, avatar_URL: 'https://www.example.com/?v=1' },
+				73705672: { ID: 73705672, avatar_URL: 'https://www.73705672.com' }
+			} );
+		} );
+
+		it( 'should leave the state unchanged if user object not found or is incorrect', () => {
+			const original = Object.freeze( {
+				73705554: { ID: 73705554, avatar_URL: 'https://www.example.com' }
+			} );
+			const state = items( original, {
+				type: GRAVATAR_UPLOAD_RECEIVE,
+				expiration: 1,
+				src: 'tempImageSrc',
+				userId: 1
+			} );
+			expect( state ).to.eql( original );
 		} );
 
 		describe( 'persistence', () => {
