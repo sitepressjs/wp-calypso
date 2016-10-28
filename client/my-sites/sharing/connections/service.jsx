@@ -168,30 +168,8 @@ const SharingService = React.createClass( {
 	},
 
 	componentWillUnmount: function() {
-		this.props.connections.off( 'destroy:success', this.onDisconnectionSuccess );
-		this.props.connections.off( 'destroy:error', this.onDisconnectionError );
 		this.props.connections.off( 'refresh:success', this.onRefreshSuccess );
 		this.props.connections.off( 'refresh:error', this.onRefreshError );
-	},
-
-	onDisconnectionSuccess: function() {
-		this.setState( { isDisconnecting: false } );
-		this.props.connections.off( 'destroy:error', this.onDisconnectionError );
-
-		this.props.successNotice( this.props.translate( 'The %(service)s account was successfully disconnected.', {
-			args: { service: this.props.service.label },
-			context: 'Sharing: Publicize disconnection confirmation'
-		} ) );
-	},
-
-	onDisconnectionError: function() {
-		this.setState( { isDisconnecting: false } );
-		this.props.connections.off( 'destroy:success', this.onDisconnectionSuccess );
-
-		this.props.errorNotice( this.props.translate( 'The %(service)s account was unable to be disconnected.', {
-			args: { service: this.props.service.label },
-			context: 'Sharing: Publicize disconnection confirmation'
-		} ) );
 	},
 
 	onRefreshSuccess: function() {
@@ -214,19 +192,6 @@ const SharingService = React.createClass( {
 		} ) );
 	},
 
-	disconnect: function( connections ) {
-		if ( 'undefined' === typeof connections ) {
-			// If connections is undefined, assume that all connections for
-			// this service are to be removed.
-			connections = this.getRemovableConnections( this.props.service.ID );
-		}
-
-		this.setState( { isDisconnecting: true } );
-		this.props.connections.once( 'destroy:success', this.onDisconnectionSuccess );
-		this.props.connections.once( 'destroy:error', this.onDisconnectionError );
-		this.removeConnection( connections );
-	},
-
 	refresh: function( oldConnection ) {
 		this.setState( { isRefreshing: true } );
 		this.props.connections.once( 'refresh:success', this.onRefreshSuccess );
@@ -241,12 +206,13 @@ const SharingService = React.createClass( {
 	},
 
 	performAction: function() {
-		const connectionStatus = this.getConnectionStatus( this.props.service.ID );
+		const connectionStatus = this.getConnectionStatus( this.props.service.ID ),
+			removableConnections = this.getRemovableConnections( this.props.service.ID );
 
 		// Depending on current status, perform an action when user clicks the
 		// service action button
-		if ( 'connected' === connectionStatus && this.getRemovableConnections( this.props.service.ID ).length ) {
-			this.disconnect();
+		if ( 'connected' === connectionStatus && removableConnections.length ) {
+			this.removeConnection( removableConnections );
 			this.props.recordGoogleEvent( 'Sharing', 'Clicked Disconnect Button', this.props.service.ID );
 		} else if ( 'reconnect' === connectionStatus ) {
 			this.refresh();
@@ -312,10 +278,17 @@ const SharingService = React.createClass( {
 		this.props.connections.refresh( connection );
 	},
 
-	removeConnection: function( connections ) {
+	/**
+	 * Deletes the passed connections.
+	 *
+	 * @param {Array} connections Optional. Connections to be deleted.
+	 *                            Default: All connections for this service.
+	 */
+	removeConnection: function( connections = this.getRemovableConnections( this.props.service.ID ) ) {
+		this.setState( { isDisconnecting: true } );
+
 		connections = this.filterConnectionsToRemove( connections );
 		connections.map( this.props.deleteSiteConnection );
-		this.props.connections.destroy( connections );
 	},
 
 	toggleSitewideConnection: function( connection, isSitewide ) {
@@ -395,7 +368,7 @@ const SharingService = React.createClass( {
 					isRefreshing={ this.state.isRefreshing }
 					onAddConnection={ this.addConnection }
 					onRefreshConnection={ this.refresh }
-					onRemoveConnection={ this.disconnect }
+					onRemoveConnection={ this.removeConnection }
 					onToggleSitewideConnection={ this.toggleSitewideConnection }
 					service={ this.props.service } />
 				<ServiceTip service={ this.props.service } />

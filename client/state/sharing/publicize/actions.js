@@ -116,7 +116,8 @@ export function updateSiteConnection( siteId, connectionId, attributes ) {
  * @param  {Object} connection         Connection to be deleted.
  * @param  {Number} connection.site_ID Site ID for which the connection is deleted.
  * @param  {Number} connection.ID      ID of the connection to be deleted.
- * @return {Function}          Action thunk
+ * @param  {String} connection.label   Name of the service that was connected.
+ * @return {Function}                  Action thunk
  */
 export function deleteSiteConnection( connection ) {
 	return ( dispatch ) =>
@@ -131,11 +132,18 @@ export function deleteSiteConnection( connection ) {
 
 				dispatch( {
 					type: PUBLICIZE_CONNECTION_DELETE_FAILURE,
-					error,
+					error: { ...error, label: connection.label },
 				} );
 			} );
 }
 
+/**
+ * Returns an action object to be used in signalling that a network request for
+ * adding a Publicize connection has failed.
+ *
+ * @param  {Object} error API response error.
+ * @return {Object}       Action object
+ */
 export function failCreateConnection( error ) {
 	return {
 		type: PUBLICIZE_CONNECTION_CREATE_FAILURE,
@@ -147,10 +155,8 @@ export function failCreateConnection( error ) {
  * Returns an action object to be used in signalling that a network request for
  * removing a Publicize connection has been received.
  *
- * @param  {Object} connection         Connection to be deleted.
- * @param  {Number} connection.site_ID Site ID for which the connection is deleted.
- * @param  {Number} connection.ID      ID of the connection to be deleted.
- * @return {Object}                    Action object
+ * @param  {Object} connection Connection to be deleted.
+ * @return {Object}            Action object
  */
 export function deleteConnection( connection ) {
 	return {
