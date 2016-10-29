@@ -26,7 +26,7 @@ import { DEFAULT_THEME_QUERY } from './constants';
  * @param  {Number} siteId Site ID
  * @return {Array}         Site themes
  */
-export const getSiteThemes = createSelector(
+export const getThemes = createSelector(
 	( state, siteId ) => {
 		const manager = state.themes.queries[ siteId ];
 		if ( ! manager ) {
@@ -46,7 +46,7 @@ export const getSiteThemes = createSelector(
  * @param  {String}  themeId Theme ID
  * @return {?Object}        Theme object
  */
-export const getSiteTheme = createSelector(
+export const getTheme = createSelector(
 	( state, siteId, themeId ) => {
 		const manager = state.themes.queries[ siteId ];
 		if ( ! manager ) {
@@ -67,7 +67,7 @@ export const getSiteTheme = createSelector(
  * @param  {Object}  query  Theme query object
  * @return {?Array}         Themes for the theme query
  */
-export const getSiteThemesForQuery = createSelector(
+export const getThemesForQuery = createSelector(
 	( state, siteId, query ) => {
 		const manager = state.themes.queries[ siteId ];
 		if ( ! manager ) {
@@ -103,7 +103,7 @@ export const getSiteThemesForQuery = createSelector(
  * @param  {Object}  query  Theme query object
  * @return {Boolean}        Whether themes are being requested
  */
-export function isRequestingSiteThemesForQuery( state, siteId, query ) {
+export function isRequestingThemesForQuery( state, siteId, query ) {
 	const serializedQuery = getSerializedThemesQuery( query, siteId );
 	return !! state.themes.queryRequests[ serializedQuery ];
 }
@@ -117,7 +117,7 @@ export function isRequestingSiteThemesForQuery( state, siteId, query ) {
  * @param  {Object}  query  Theme query object
  * @return {?Number}        Total number of found items
  */
-export function getSiteThemesFoundForQuery( state, siteId, query ) {
+export function getThemesFoundForQuery( state, siteId, query ) {
 	if ( ! state.themes.queries[ siteId ] ) {
 		return null;
 	}
@@ -134,7 +134,7 @@ export function getSiteThemesFoundForQuery( state, siteId, query ) {
  * @param  {Object}  query  Theme query object
  * @return {?Number}        Last themes page
  */
-export function getSiteThemesLastPageForQuery( state, siteId, query ) {
+export function getThemesLastPageForQuery( state, siteId, query ) {
 	if ( ! state.themes.queries[ siteId ] ) {
 		return null;
 	}
@@ -156,8 +156,8 @@ export function getSiteThemesLastPageForQuery( state, siteId, query ) {
  * @param  {Object}   query  Theme query object
  * @return {?Boolean}        Whether last themes page has been reached
  */
-export function isSiteThemesLastPageForQuery( state, siteId, query = {} ) {
-	const lastPage = getSiteThemesLastPageForQuery( state, siteId, query );
+export function isThemesLastPageForQuery( state, siteId, query = {} ) {
+	const lastPage = getThemesLastPageForQuery( state, siteId, query );
 	if ( null === lastPage ) {
 		return lastPage;
 	}

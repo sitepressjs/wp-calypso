@@ -8,14 +8,14 @@ import { values } from 'lodash';
  * Internal dependencies
  */
 import {
-	getSiteThemes,
-	getSiteTheme,
-	getSiteThemesForQuery,
+	getThemes,
+	getTheme,
+	getThemesForQuery,
 	isThemePublished,
-	isRequestingSiteThemesForQuery,
-	getSiteThemesFoundForQuery,
-	getSiteThemesLastPageForQuery,
-	isSiteThemesLastPageForQuery,
+	isRequestingThemesForQuery,
+	getThemesFoundForQuery,
+	getThemesLastPageForQuery,
+	isThemesLastPageForQuery,
 	getThemeDetailsUrl,
 	getThemeSupportUrl,
 	getThemeHelpUrl,
@@ -30,13 +30,13 @@ import ThemeQueryManager from 'lib/query-manager/theme';
 
 describe( 'themes selectors', () => {
 	beforeEach( () => {
-		getSiteThemes.memoizedSelector.cache.clear();
-		getSiteTheme.memoizedSelector.cache.clear();
-		getSiteThemesForQuery.memoizedSelector.cache.clear();
+		getThemes.memoizedSelector.cache.clear();
+		getTheme.memoizedSelector.cache.clear();
+		getThemesForQuery.memoizedSelector.cache.clear();
 		isThemePublished.memoizedSelector.cache.clear();
 	} );
 
-	describe( '#getSiteThemes()', () => {
+	describe( '#getThemes()', () => {
 		it( 'should return an array of theme objects for the site', () => {
 			const themeObjects = {
 				2916284: {
@@ -76,13 +76,13 @@ describe( 'themes selectors', () => {
 				}
 			};
 
-			expect( getSiteThemes( state, 2916284 ) ).to.have.members( values( themeObjects[ 2916284 ] ) );
+			expect( getThemes( state, 2916284 ) ).to.have.members( values( themeObjects[ 2916284 ] ) );
 		} );
 	} );
 
-	describe( '#getSiteTheme()', () => {
+	describe( '#getTheme()', () => {
 		it( 'should return null if the theme is not known for the site', () => {
-			const theme = getSiteTheme( {
+			const theme = getTheme( {
 				themes: {
 					queries: {}
 				}
@@ -98,7 +98,7 @@ describe( 'themes selectors', () => {
 				global_ID: '3d097cb7c5473c169bba0eb8e3c6cb64',
 				title: 'Hello World'
 			};
-			const theme = getSiteTheme( {
+			const theme = getTheme( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -112,9 +112,9 @@ describe( 'themes selectors', () => {
 		} );
 	} );
 
-	describe( '#getSiteThemesForQuery()', () => {
+	describe( '#getThemesForQuery()', () => {
 		it( 'should return null if the site query is not tracked', () => {
-			const siteThemes = getSiteThemesForQuery( {
+			const siteThemes = getThemesForQuery( {
 				themes: {
 					queries: {}
 				}
@@ -124,7 +124,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return null if the query is not tracked to the query manager', () => {
-			const siteThemes = getSiteThemesForQuery( {
+			const siteThemes = getThemesForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -139,7 +139,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return an array of normalized known queried themes', () => {
-			const siteThemes = getSiteThemesForQuery( {
+			const siteThemes = getThemesForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -167,7 +167,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return null if we know the number of found items but the requested set hasn\'t been received', () => {
-			const siteThemes = getSiteThemesForQuery( {
+			const siteThemes = getThemesForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -194,9 +194,9 @@ describe( 'themes selectors', () => {
 		} );
 	} );
 
-	describe( '#isRequestingSiteThemesForQuery()', () => {
+	describe( '#isRequestingThemesForQuery()', () => {
 		it( 'should return false if the site has not been queried', () => {
-			const isRequesting = isRequestingSiteThemesForQuery( {
+			const isRequesting = isRequestingThemesForQuery( {
 				themes: {
 					queryRequests: {}
 				}
@@ -206,7 +206,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return false if the site has not been queried for the specific query', () => {
-			const isRequesting = isRequestingSiteThemesForQuery( {
+			const isRequesting = isRequestingThemesForQuery( {
 				themes: {
 					queryRequests: {
 						'2916284:{"search":"Hel"}': true
@@ -218,7 +218,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return true if the site has been queried for the specific query', () => {
-			const isRequesting = isRequestingSiteThemesForQuery( {
+			const isRequesting = isRequestingThemesForQuery( {
 				themes: {
 					queryRequests: {
 						'2916284:{"search":"Hello"}': true
@@ -230,7 +230,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return false if the site has previously, but is not currently, querying for the specified query', () => {
-			const isRequesting = isRequestingSiteThemesForQuery( {
+			const isRequesting = isRequestingThemesForQuery( {
 				themes: {
 					queryRequests: {
 						'2916284:{"search":"Hello"}': false
@@ -242,9 +242,9 @@ describe( 'themes selectors', () => {
 		} );
 	} );
 
-	describe( 'getSiteThemesFoundForQuery()', () => {
+	describe( 'getThemesFoundForQuery()', () => {
 		it( 'should return null if the site query is not tracked', () => {
-			const found = getSiteThemesFoundForQuery( {
+			const found = getThemesFoundForQuery( {
 				themes: {
 					queries: {}
 				}
@@ -254,7 +254,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return the found items for a site query', () => {
-			const found = getSiteThemesFoundForQuery( {
+			const found = getThemesFoundForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -276,7 +276,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return zero if in-fact there are zero items', () => {
-			const found = getSiteThemesFoundForQuery( {
+			const found = getThemesFoundForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -296,9 +296,9 @@ describe( 'themes selectors', () => {
 		} );
 	} );
 
-	describe( '#getSiteThemesLastPageForQuery()', () => {
+	describe( '#getThemesLastPageForQuery()', () => {
 		it( 'should return null if the site query is not tracked', () => {
-			const lastPage = getSiteThemesLastPageForQuery( {
+			const lastPage = getThemesLastPageForQuery( {
 				themes: {
 					queries: {}
 				}
@@ -308,7 +308,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return the last page value for a site query', () => {
-			const lastPage = getSiteThemesLastPageForQuery( {
+			const lastPage = getThemesLastPageForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -330,7 +330,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return the last page value for a site query, even if including page param', () => {
-			const lastPage = getSiteThemesLastPageForQuery( {
+			const lastPage = getThemesLastPageForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -352,7 +352,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return 1 if there are no found themes', () => {
-			const lastPage = getSiteThemesLastPageForQuery( {
+			const lastPage = getThemesLastPageForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -372,9 +372,9 @@ describe( 'themes selectors', () => {
 		} );
 	} );
 
-	describe( '#isSiteThemesLastPageForQuery()', () => {
+	describe( '#isThemesLastPageForQuery()', () => {
 		it( 'should return null if the last page is not known', () => {
-			const isLastPage = isSiteThemesLastPageForQuery( {
+			const isLastPage = isThemesLastPageForQuery( {
 				themes: {
 					queries: {}
 				}
@@ -384,7 +384,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return false if the query explicit value is not the last page', () => {
-			const isLastPage = isSiteThemesLastPageForQuery( {
+			const isLastPage = isThemesLastPageForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -406,7 +406,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return true if the query explicit value is the last page', () => {
-			const isLastPage = isSiteThemesLastPageForQuery( {
+			const isLastPage = isThemesLastPageForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
@@ -428,7 +428,7 @@ describe( 'themes selectors', () => {
 		} );
 
 		it( 'should return true if the query implicit value is the last page', () => {
-			const isLastPage = isSiteThemesLastPageForQuery( {
+			const isLastPage = isThemesLastPageForQuery( {
 				themes: {
 					queries: {
 						2916284: new ThemeQueryManager( {
