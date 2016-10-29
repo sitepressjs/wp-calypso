@@ -11,7 +11,6 @@ import {
 	getThemes,
 	getTheme,
 	getThemesForQuery,
-	isThemePublished,
 	isRequestingThemesForQuery,
 	getThemesFoundForQuery,
 	getThemesLastPageForQuery,
@@ -33,7 +32,6 @@ describe( 'themes selectors', () => {
 		getThemes.memoizedSelector.cache.clear();
 		getTheme.memoizedSelector.cache.clear();
 		getThemesForQuery.memoizedSelector.cache.clear();
-		isThemePublished.memoizedSelector.cache.clear();
 	} );
 
 	describe( '#getThemes()', () => {
