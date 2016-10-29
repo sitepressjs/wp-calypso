@@ -2,15 +2,12 @@
  * External dependencies
  */
 import { expect } from 'chai';
-import deepFreeze from 'deep-freeze';
 import { values } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import {
-	getTheme,
-	getNormalizedTheme,
 	getSiteThemes,
 	getSiteTheme,
 	getSiteThemesForQuery,
@@ -35,110 +32,8 @@ describe( 'themes selectors', () => {
 	beforeEach( () => {
 		getSiteThemes.memoizedSelector.cache.clear();
 		getSiteTheme.memoizedSelector.cache.clear();
-		getNormalizedTheme.memoizedSelector.cache.clear();
 		getSiteThemesForQuery.memoizedSelector.cache.clear();
 		isThemePublished.memoizedSelector.cache.clear();
-	} );
-
-	describe( '#getTheme()', () => {
-		it( 'should return null if the global ID is not tracked', () => {
-			const theme = getTheme( {
-				themes: {
-					items: {},
-					queries: {}
-				}
-			}, '3d097cb7c5473c169bba0eb8e3c6cb64' );
-
-			expect( theme ).to.be.null;
-		} );
-
-		it( 'should return null if there is no manager associated with the path site', () => {
-			const theme = getTheme( {
-				themes: {
-					items: {
-						'3d097cb7c5473c169bba0eb8e3c6cb64': [ 2916284, 841 ]
-					},
-					queries: {}
-				}
-			}, '3d097cb7c5473c169bba0eb8e3c6cb64' );
-
-			expect( theme ).to.be.null;
-		} );
-
-		it( 'should return the object for the theme global ID', () => {
-			const themeObject = {
-				ID: 841,
-				site_ID: 2916284,
-				global_ID: '3d097cb7c5473c169bba0eb8e3c6cb64',
-				title: 'Ribs &amp; Chicken'
-			};
-			const theme = getTheme( {
-				themes: {
-					items: {
-						'3d097cb7c5473c169bba0eb8e3c6cb64': [ 2916284, 841 ]
-					},
-					queries: {
-						2916284: new ThemeQueryManager( {
-							items: { 841: themeObject }
-						} )
-					}
-				}
-			}, '3d097cb7c5473c169bba0eb8e3c6cb64' );
-
-			expect( theme ).to.equal( themeObject );
-		} );
-	} );
-
-	describe( 'getNormalizedTheme()', () => {
-		it( 'should return null if the theme is not tracked', () => {
-			const normalizedTheme = getNormalizedTheme( {
-				themes: {
-					items: {},
-					queries: {}
-				}
-			}, '3d097cb7c5473c169bba0eb8e3c6cb64' );
-
-			expect( normalizedTheme ).to.be.null;
-		} );
-
-		it( 'should return a normalized copy of the theme', () => {
-			const themeObject = {
-				ID: 841,
-				site_ID: 2916284,
-				global_ID: '3d097cb7c5473c169bba0eb8e3c6cb64',
-				title: 'Ribs &amp; Chicken',
-				author: {
-					name: 'Badman <img onerror= />'
-				},
-				featured_image: 'https://example.com/logo.png'
-			};
-
-			const normalizedTheme = getNormalizedTheme( deepFreeze( {
-				themes: {
-					items: {
-						'3d097cb7c5473c169bba0eb8e3c6cb64': [ 2916284, 841 ]
-					},
-					queries: {
-						2916284: new ThemeQueryManager( {
-							items: { 841: themeObject }
-						} )
-					}
-				}
-			} ), '3d097cb7c5473c169bba0eb8e3c6cb64' );
-
-			expect( normalizedTheme ).to.not.equal( themeObject );
-			expect( normalizedTheme ).to.eql( {
-				...themeObject,
-				title: 'Ribs & Chicken',
-				author: {
-					name: 'Badman '
-				},
-				canonical_image: {
-					type: 'image',
-					uri: 'https://example.com/logo.png'
-				}
-			} );
-		} );
 	} );
 
 	describe( '#getSiteThemes()', () => {

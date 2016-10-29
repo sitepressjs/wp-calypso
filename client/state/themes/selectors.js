@@ -20,28 +20,6 @@ import {
 import { DEFAULT_THEME_QUERY } from './constants';
 
 /**
- * Returns a theme object by its ID.
- *
- * @param  {Object} state Global state tree
- * @param  {String} id    Theme ID
- * @return {Object}       Theme object
- */
-export function getTheme( state, id ) {
-	const path = state.themes.items[ id ];
-	if ( ! path ) {
-		return null;
-	}
-
-	const [ siteId, themeId ] = path;
-	const manager = state.themes.queries[ siteId ];
-	if ( ! manager ) {
-		return null;
-	}
-
-	return manager.getItem( themeId );
-}
-
-/**
  * Returns an array of theme objects by site ID.
  *
  * @param  {Object} state  Global state tree
