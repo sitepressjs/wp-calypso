@@ -72,7 +72,8 @@ describe( 'reducer', () => {
 			'items',
 			'siteRequests',
 			'queryRequests',
-			'queries'
+			'queries',
+			'themesUI'
 		] );
 	} );
 
