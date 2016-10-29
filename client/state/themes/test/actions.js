@@ -20,7 +20,7 @@ import {
 	receiveTheme,
 	receiveThemes,
 	requestThemes,
-	requestSiteTheme
+	requestTheme
 } from '../actions';
 import useNock from 'test/helpers/use-nock';
 
@@ -212,7 +212,7 @@ describe( 'actions', () => {
 		} );
 	} );
 
-	describe( '#requestSiteTheme()', () => {
+	describe( '#requestTheme()', () => {
 		useNock( ( nock ) => {
 			nock( 'https://public-api.wordpress.com:443' )
 				.persist()
@@ -226,7 +226,7 @@ describe( 'actions', () => {
 		} );
 
 		it( 'should dispatch request action when thunk triggered', () => {
-			requestSiteTheme( 2916284, 413 )( spy );
+			requestTheme( 2916284, 413 )( spy );
 
 			expect( spy ).to.have.been.calledWith( {
 				type: THEME_REQUEST,
@@ -236,7 +236,7 @@ describe( 'actions', () => {
 		} );
 
 		it( 'should dispatch themes receive action when request completes', () => {
-			return requestSiteTheme( 2916284, 413 )( spy ).then( () => {
+			return requestTheme( 2916284, 413 )( spy ).then( () => {
 				expect( spy ).to.have.been.calledWith( {
 					type: THEMES_RECEIVE,
 					themes: [
@@ -247,7 +247,7 @@ describe( 'actions', () => {
 		} );
 
 		it( 'should dispatch themes themes request success action when request completes', () => {
-			return requestSiteTheme( 2916284, 413 )( spy ).then( () => {
+			return requestTheme( 2916284, 413 )( spy ).then( () => {
 				expect( spy ).to.have.been.calledWith( {
 					type: THEME_REQUEST_SUCCESS,
 					siteId: 2916284,
@@ -257,7 +257,7 @@ describe( 'actions', () => {
 		} );
 
 		it( 'should dispatch fail action when request fails', () => {
-			return requestSiteTheme( 2916284, 420 )( spy ).then( () => {
+			return requestTheme( 2916284, 420 )( spy ).then( () => {
 				expect( spy ).to.have.been.calledWith( {
 					type: THEME_REQUEST_FAILURE,
 					siteId: 2916284,

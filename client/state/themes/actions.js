@@ -92,7 +92,7 @@ export function requestThemes( siteId, isJetpack = false, query = {} ) {
  * @param  {Number}   themeId Theme ID
  * @return {Function}        Action thunk
  */
-export function requestSiteTheme( siteId, themeId ) {
+export function requestTheme( siteId, themeId ) {
 	return ( dispatch ) => {
 		dispatch( {
 			type: THEME_REQUEST,
