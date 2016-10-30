@@ -246,7 +246,7 @@ describe( 'actions', () => {
 			} );
 		} );
 
-		it( 'should dispatch themes themes request success action when request completes', () => {
+		it( 'should dispatch themes request success action when request completes', () => {
 			return requestTheme( 2916284, 413 )( spy ).then( () => {
 				expect( spy ).to.have.been.calledWith( {
 					type: THEME_REQUEST_SUCCESS,
