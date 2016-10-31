@@ -45,6 +45,7 @@ export const FEATURE_13GB_STORAGE = '13gb-storage';
 export const FEATURE_UNLIMITED_STORAGE = 'unlimited-storage';
 export const FEATURE_COMMUNITY_SUPPORT = 'community-support';
 export const FEATURE_EMAIL_LIVE_CHAT_SUPPORT = 'email-live-chat-support';
+export const FEATURE_PREMIUM_SUPPORT = 'priority-support';
 export const FEATURE_BASIC_DESIGN = 'basic-design';
 export const FEATURE_ADVANCED_DESIGN = 'advanced-design';
 export const FEATURE_GOOGLE_ANALYTICS = 'google-analytics';
@@ -222,14 +223,14 @@ export const PLANS_LIST = {
 			' With daily backups, malware scanning, and spam defense.'
 		),
 		getFeatures: () => [
-			FEATURE_MALWARE_SCANNING_DAILY,
 			FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
 			FEATURE_BACKUP_ARCHIVE_30,
 			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
 			FEATURE_AUTOMATED_RESTORES,
 			FEATURE_SPAM_AKISMET_PLUS,
+			FEATURE_MALWARE_SCANNING_DAILY,
 			FEATURE_EASY_SITE_MIGRATION,
-			FEATURE_EMAIL_LIVE_CHAT_SUPPORT
+			FEATURE_PREMIUM_SUPPORT
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed yearly' )
 	},
@@ -261,14 +262,14 @@ export const PLANS_LIST = {
 			'Advanced security features to keep your site safe and sound.' +
 			' With daily backups, malware scanning, and spam defense.'		),
 		getFeatures: () => [
-			FEATURE_MALWARE_SCANNING_DAILY,
 			FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
 			FEATURE_BACKUP_ARCHIVE_30,
 			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
 			FEATURE_AUTOMATED_RESTORES,
 			FEATURE_SPAM_AKISMET_PLUS,
+			FEATURE_MALWARE_SCANNING_DAILY,
 			FEATURE_EASY_SITE_MIGRATION,
-			FEATURE_EMAIL_LIVE_CHAT_SUPPORT
+			FEATURE_PREMIUM_SUPPORT
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed monthly' )
 	},
@@ -287,9 +288,7 @@ export const PLANS_LIST = {
 			FEATURE_BACKUP_ARCHIVE_30,
 			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
 			FEATURE_AUTOMATED_RESTORES,
-			FEATURE_SPAM_AKISMET_PLUS,
-			FEATURE_EASY_SITE_MIGRATION,
-			FEATURE_EMAIL_LIVE_CHAT_SUPPORT
+			FEATURE_SPAM_AKISMET_PLUS
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed monthly' )
 	},
@@ -303,14 +302,14 @@ export const PLANS_LIST = {
 			'More powerful security tools, including malware removal and realtime content backup, for the ultimate peace of mind.'
 		),
 		getFeatures: () => [
-			FEATURE_MALWARE_SCANNING_DAILY_AND_ON_DEMAND,
 			FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME,
 			FEATURE_BACKUP_ARCHIVE_UNLIMITED,
 			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
 			FEATURE_AUTOMATED_RESTORES,
 			FEATURE_SPAM_AKISMET_PLUS,
+			FEATURE_MALWARE_SCANNING_DAILY_AND_ON_DEMAND,
 			FEATURE_EASY_SITE_MIGRATION,
-			FEATURE_EMAIL_LIVE_CHAT_SUPPORT,
+			FEATURE_PREMIUM_SUPPORT,
 			FEATURE_ONE_CLICK_THREAT_RESOLUTION,
 			FEATURE_POLLS_PRO
 		],
@@ -326,14 +325,14 @@ export const PLANS_LIST = {
 			'More powerful security tools, including malware removal and realtime content backup, for the ultimate peace of mind.'
 		),
 		getFeatures: () => [
-			FEATURE_MALWARE_SCANNING_DAILY_AND_ON_DEMAND,
 			FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME,
 			FEATURE_BACKUP_ARCHIVE_UNLIMITED,
 			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
 			FEATURE_AUTOMATED_RESTORES,
 			FEATURE_SPAM_AKISMET_PLUS,
+			FEATURE_MALWARE_SCANNING_DAILY_AND_ON_DEMAND,
 			FEATURE_EASY_SITE_MIGRATION,
-			FEATURE_EMAIL_LIVE_CHAT_SUPPORT,
+			FEATURE_PREMIUM_SUPPORT,
 			FEATURE_ONE_CLICK_THREAT_RESOLUTION,
 			FEATURE_POLLS_PRO
 		],
@@ -508,7 +507,7 @@ export const FEATURES_LIST = {
 		getSlug: () => FEATURE_3GB_STORAGE,
 		getTitle: () => i18n.translate( '3GB Storage Space' ),
 		getDescription: () => i18n.translate(
-			"Storage space for adding images and documents to your website."
+			'Storage space for adding images and documents to your website.'
 		)
 	},
 
@@ -542,6 +541,16 @@ export const FEATURES_LIST = {
 			'and running and working how you want it.'
 		)
 	},
+
+	[ FEATURE_PREMIUM_SUPPORT ]: {
+		getSlug: () => FEATURE_PREMIUM_SUPPORT,
+		getTitle: () => i18n.translate( 'Priority Support' ),
+		getDescription: () => i18n.translate(
+			'High quality support to help you get your website up ' +
+			'and running and working how you want it.'
+		)
+	},
+
 	[ FEATURE_STANDARD_SECURITY_TOOLS ]: {
 		getSlug: () => FEATURE_STANDARD_SECURITY_TOOLS,
 		getTitle: () => i18n.translate( 'Standard Security Tools' ),
@@ -580,7 +589,7 @@ export const FEATURES_LIST = {
 	},
 	[ FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME ]: {
 		getSlug: () => FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME,
-		getTitle: () => i18n.translate( 'Realtime Offsite Backups' ),
+		getTitle: () => i18n.translate( 'Real-time Offsite Backups' ),
 		getDescription: () => i18n.translate(
 			'Automatic realtime backups of every single aspect of your site. ' +
 			'Stored safely and optimized for WordPress.'
