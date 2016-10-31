@@ -4,9 +4,7 @@
 import React from 'react';
 import { map, take } from 'lodash';
 
-/**
- * Internal Dependencies
- */
+var debug = require( 'debug' )( 'calypso:reader:post-gallery' );
 
 class PostGallery extends React.Component {
 
@@ -16,12 +14,14 @@ class PostGallery extends React.Component {
 
 	render() {
 		const post = this.props.post;
+		debug( post );
 		const numberOfImagesToDisplay = 4;
 		const imagesToDisplay = take( post.content_images, numberOfImagesToDisplay );
 		const listItems = map( imagesToDisplay, ( image, index ) => {
+			debug( 'image alt on ' + image.src + ' is ' + image.alt );
 			return (
 				<li key={ `post-${ post.ID }-image-${ index }` } className="reader-post-card__gallery-item">
-					<img src={ image.src } />
+					<img alt={ image.alt } src={ image.src } />
 				</li>
 			);
 		} );

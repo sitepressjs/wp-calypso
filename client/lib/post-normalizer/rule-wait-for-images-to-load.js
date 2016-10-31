@@ -21,7 +21,7 @@ import debugFactory from 'debug';
 const debug = debugFactory( 'calypso:post-normalizer:wait-for-images-to-load' );
 
 function convertImageToObject( image ) {
-	return pick( image, [ 'src', 'naturalWidth', 'naturalHeight' ] );
+	return pick( image, [ 'src', 'naturalWidth', 'naturalHeight', 'alt' ] );
 }
 
 function imageForURL( imageUrl ) {
